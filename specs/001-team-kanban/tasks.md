@@ -67,19 +67,19 @@ without changing its project or status.
 reassign the task, and confirm the task remains in To Do with the correct assignee and
 notification.
 
-### Tests for User Story 1
+### Contract Prerequisite and Tests for User Story 1
 
-- [ ] T022 [P] [US1] Add project and task REST contract tests, including task patches that reject both or neither mutable field, in tests/contract/projects-tasks.contract.test.ts.
-- [ ] T023 [P] [US1] Add authorization and invalid-input integration tests in tests/integration/project-task-authorization.test.ts.
-- [ ] T024 [P] [US1] Add product-manager project/task browser flow coverage in tests/e2e/project-task-management.spec.ts.
+- [ ] T022 [US1] Define the authenticated v1 notification-ingestion endpoint, payload schema, idempotency key, retry owner, stable error semantics, and terminal-failure behavior in specs/001-team-kanban/contracts/openapi.yaml and packages/contracts/src/notification-ingestion.ts; then add project, task, and notification-ingestion REST contract tests, including task patches that reject both or neither mutable field and coverage for the ingestion payload shape, authenticated service credentials, stable v1 error envelopes, and rejection of unknown fields in tests/contract/projects-tasks.contract.test.ts and tests/contract/notification-ingestion.contract.test.ts.
+- [ ] T023 [P] [US1] After T022, add project/task authorization and notification-ingestion integration tests covering invalid input, invalid service credentials, idempotent retries, and preservation of committed task state when notification delivery is unavailable in tests/integration/project-task-authorization.test.ts and tests/integration/notification-ingestion.test.ts.
+- [ ] T024 [P] [US1] After T022, add product-manager project/task browser flow coverage in tests/e2e/project-task-management.spec.ts, including local-demo actor selection and confirmation that the new assignee can list the assignment notification while the acting product manager cannot.
 
 ### Implementation for User Story 1
 
 - [ ] T025 [US1] Implement project validation, creation, lookup, and persistence in services/project-service/src/projects.ts.
 - [ ] T026 [US1] Implement task creation, assignment/reassignment authorization, version updates, and persistence in services/task-board-service/src/tasks.ts.
-- [ ] T027 [US1] Publish assignment and reassignment notifications from services/task-board-service/src/tasks.ts through services/notification-service/src/events.ts.
-- [ ] T028 [US1] Implement project and task REST handlers in apps/web/app/api/v1/projects/route.ts, apps/web/app/api/v1/projects/[projectId]/route.ts, apps/web/app/api/v1/projects/[projectId]/tasks/route.ts, and apps/web/app/api/v1/tasks/[taskId]/route.ts.
-- [ ] T029 [US1] Implement the product-manager project and task creation interface in apps/web/app/projects/page.tsx and apps/web/components/project-task-form.tsx.
+- [ ] T027 [US1] Implement the task-board notification client in services/task-board-service/src/notification-client.ts and notification-service handler in services/notification-service/src/http.ts; publish assignment and reassignment events through the approved v1 notification-ingestion contract with retry-safe failure handling, update the affected service runbooks, and do not import notification-service source modules.
+- [ ] T028 [US1] Implement project and task REST handlers in apps/web/app/api/v1/projects/route.ts, apps/web/app/api/v1/projects/[projectId]/route.ts, apps/web/app/api/v1/projects/[projectId]/tasks/route.ts, and apps/web/app/api/v1/tasks/[taskId]/route.ts; update the v1 project/task contract and project-service and task-board-service runbooks with the same change.
+- [ ] T029 [US1] Deliver the Phase 3 UI as three reviewable internal changes: (a) local-demo active-actor selection and state in apps/web/components/active-user-selector.tsx and apps/web/lib/active-actor.ts; (b) product-manager project/task creation, assignment, reassignment, and validation feedback in apps/web/app/projects/page.tsx and apps/web/components/project-task-form.tsx; and (c) recipient notification listing and actor-switching behavior in apps/web/components/notification-list.tsx.
 
 **Checkpoint**: The product manager can create and assign work, with documented REST behavior and
 automated validation.
@@ -104,8 +104,8 @@ engineer is forbidden.
 ### Implementation for User Story 2
 
 - [ ] T033 [US2] Implement validated task status mutations, role checks, and optimistic-version conflict handling in services/task-board-service/src/tasks.ts.
-- [ ] T034 [US2] Publish task status notifications and board-update events in services/task-board-service/src/tasks.ts and services/notification-service/src/events.ts.
-- [ ] T035 [US2] Implement the project board query and status mutation REST handlers in apps/web/app/api/v1/projects/[projectId]/route.ts and apps/web/app/api/v1/tasks/[taskId]/route.ts.
+- [ ] T034 [US2] Publish task status notifications and board-update events through the authenticated v1 notification-ingestion contract in services/task-board-service/src/notification-client.ts with retry-safe failure handling; do not import notification-service source modules.
+- [ ] T035 [US2] Implement the project board query and status mutation REST handlers in apps/web/app/api/v1/projects/[projectId]/route.ts and apps/web/app/api/v1/tasks/[taskId]/route.ts; update the board mutation, SSE, and accessibility documentation with the same change.
 - [ ] T036 [US2] Implement the four-column accessible drag-and-drop board in apps/web/app/projects/[projectId]/page.tsx and apps/web/components/kanban-board.tsx.
 - [ ] T037 [US2] Implement the authenticated event-stream client and board refresh behavior in apps/web/lib/notification-stream.ts and apps/web/components/kanban-board.tsx.
 
@@ -130,8 +130,8 @@ confirm attempted edit/delete actions preserve the original comment.
 ### Implementation for User Story 3
 
 - [ ] T041 [US3] Implement append-only comment validation, persistence, and task-reference checks in services/collaboration-service/src/comments.ts.
-- [ ] T042 [US3] Publish comment notifications for the task assignee and product manager whenever either is not the author, excluding the actor, in services/collaboration-service/src/comments.ts and services/notification-service/src/events.ts.
-- [ ] T043 [US3] Implement comment list/create REST handlers and task-card comment UI in apps/web/app/api/v1/tasks/[taskId]/comments/route.ts and apps/web/components/task-comments.tsx.
+- [ ] T042 [US3] Implement the collaboration notification client in services/collaboration-service/src/notification-client.ts and publish comment notifications for the task assignee and product manager whenever either is not the author, excluding the actor, through the authenticated v1 notification-ingestion contract with retry-safe failure handling; do not import notification-service source modules.
+- [ ] T043 [US3] Implement comment list/create REST handlers and task-card comment UI in apps/web/app/api/v1/tasks/[taskId]/comments/route.ts and apps/web/components/task-comments.tsx; update the collaboration API contract and service runbook with the same change.
 
 **Checkpoint**: Comments are attributed, immutable, validated, and visible to all predefined users.
 
@@ -151,8 +151,8 @@ product manager, four engineers, and three sample projects are available.
 
 ### Implementation for User Story 4
 
-- [ ] T046 [US4] Implement the predefined-user selector and no-login active-actor context in apps/web/components/active-user-selector.tsx and apps/web/lib/active-actor.ts.
-- [ ] T047 [US4] Implement initial workspace project list and roster display in apps/web/app/page.tsx and apps/web/components/workspace-overview.tsx.
+- [ ] T046 [US4] Integrate the existing predefined-user selector into the initial workspace and implement local-demo active-actor selection persistence and reset behavior in apps/web/app/page.tsx and apps/web/lib/active-actor.ts.
+- [ ] T047 [US4] Implement initial workspace project list and roster display in apps/web/app/page.tsx and apps/web/components/workspace-overview.tsx; update seeded-workspace and local-demo deployment guidance with the same change.
 
 **Checkpoint**: The seeded, no-login workspace is ready for an end-to-end demonstration.
 
@@ -163,11 +163,11 @@ product manager, four engineers, and three sample projects are available.
 **Purpose**: Complete notification visibility, operational documentation, accessibility, security,
 and release validation across all user stories.
 
-- [ ] T048 [P] Implement the in-app recipient notification list and live refresh UI in apps/web/components/notification-list.tsx and apps/web/app/layout.tsx.
+- [ ] T048 [P] Enhance the in-app recipient notification list with live refresh and reconnection behavior in apps/web/components/notification-list.tsx and apps/web/app/layout.tsx.
 - [ ] T049 Add accessibility requirements verification and keyboard drag-and-drop coverage in tests/e2e/kanban-accessibility.spec.ts and docs/accessibility.md.
 - [ ] T050 Add performance, concurrency, input-validation, and no-sensitive-diagnostics coverage in tests/integration/performance-boundary.test.ts, tests/integration/input-validation.test.ts, and tests/integration/diagnostics.test.ts.
-- [ ] T051 Update API, service, deployment, and operational documentation in docs/api.md, docs/deployment.md, docs/runbook.md, and README.md.
-- [ ] T052 Run the end-to-end quickstart validation and record results in specs/001-team-kanban/quickstart.md.
+- [ ] T051 Reconcile API, service, deployment, and operational documentation for the completed release in docs/api.md, docs/deployment.md, docs/runbook.md, and README.md.
+- [ ] T052 Run the end-to-end quickstart validation and record results, including the SC-001, SC-002, SC-005, and SC-006 timing thresholds, in specs/001-team-kanban/quickstart.md.
 
 ---
 
