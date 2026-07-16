@@ -35,3 +35,138 @@ body {
   font-weight: 700;
   text-transform: uppercase;
 }
+
+.primary-link,
+button {
+  display: inline-block;
+  border: 0;
+  border-radius: 0.35rem;
+  padding: 0.65rem 0.9rem;
+  background: #4558c8;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.workspace {
+  max-width: 72rem;
+  margin: 2.5rem auto;
+  padding: 0 1.25rem 3rem;
+}
+
+.workspace-header,
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.actor-selector {
+  display: grid;
+  gap: 0.25rem;
+  color: #34405a;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.actor-selector select,
+input,
+select {
+  border: 1px solid #aab3c5;
+  border-radius: 0.3rem;
+  padding: 0.55rem;
+  background: #ffffff;
+  color: #172033;
+  font: inherit;
+}
+
+.local-demo-note,
+.notice {
+  border-left: 4px solid #4558c8;
+  padding: 0.6rem 0.8rem;
+  background: #eef0ff;
+}
+
+.workspace-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.panel {
+  border: 1px solid #d8deea;
+  border-radius: 0.55rem;
+  padding: 1.25rem;
+  background: #ffffff;
+}
+
+.panel form,
+.panel label {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.panel form {
+  gap: 0.85rem;
+}
+
+.tasks,
+.notifications,
+.feedback {
+  grid-column: 1 / -1;
+}
+
+.tasks ul,
+.notifications ul {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tasks li,
+.notifications li {
+  display: grid;
+  gap: 0.35rem;
+  border-top: 1px solid #e4e7ef;
+  padding-top: 0.75rem;
+}
+
+.notifications small {
+  color: #56627a;
+}
+
+.text-button {
+  padding: 0.25rem 0;
+  background: transparent;
+  color: #4558c8;
+}
+
+.feedback {
+  margin: 0;
+  border-left: 4px solid #237746;
+  padding: 0.75rem;
+  background: #e8f7ed;
+}
+
+.feedback.error {
+  border-color: #b42318;
+  background: #fff0ef;
+  color: #7b1d16;
+}
+
+@media (max-width: 40rem) {
+  .workspace-header,
+  .section-heading {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .workspace-grid {
+    grid-template-columns: 1fr;
+  }
+}
