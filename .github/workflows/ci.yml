@@ -13,7 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout pull request history
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Checkout push history
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v4
+      - name: Fetch base branch for Changesets
+        if: github.event_name == 'pull_request'
+        run: git fetch origin main:main
       - uses: actions/setup-node@v4
         with:
           node-version: 24.16.0

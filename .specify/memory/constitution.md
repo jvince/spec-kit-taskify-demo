@@ -1,16 +1,16 @@
 <!--
 Sync Impact Report
-- Version change: 1.1.0 -> 1.2.0
-- Modified principles: VII Simplicity and Operational Clarity (expanded with deterministic
-  dependency-management requirements)
+- Version change: 1.2.0 -> 1.3.0
+- Modified principles: VI Incremental, Reviewable Delivery (expanded with mandatory pull-request
+  review and protected-main requirements)
 - Added sections: none
 - Removed sections: none
 - Templates requiring updates:
   - updated: .specify/templates/plan-template.md
   - updated: .specify/templates/tasks-template.md
-  - updated: .specify/templates/spec-template.md
-- Follow-up TODOs: Replace the existing floating dependency declarations with the exact versions
-  already validated in package-lock.json in a dedicated implementation change.
+  - reviewed: .specify/templates/spec-template.md (no update required)
+- Follow-up TODOs: Configure matching GitHub branch protection for `main`, including required CI
+  status checks and one approving review.
 -->
 # Taskify Constitution
 
@@ -59,6 +59,14 @@ priority. Each increment MUST be demonstrable without relying on later stories, 
 MUST verify its requirements, tests, and constitution compliance. Rationale: small increments
 expose misunderstanding early and keep the project releasable.
 
+All changes to code, configuration, service contracts, or deployment artifacts MUST be proposed
+from a topic branch through a pull request; direct pushes to `main` are prohibited except for a
+documented emergency remediation. A pull request MUST link applicable specification and planning
+artifacts, include a changeset when release-relevant, pass all required CI quality gates, and
+receive at least one maintainer approval before merge. `main` MUST be protected to enforce these
+requirements. Rationale: an auditable review path prevents unreviewed regressions and makes
+delivery evidence durable.
+
 ### VII. Simplicity and Operational Clarity
 The simplest design that satisfies approved requirements MUST be preferred. New dependencies,
 abstractions, services, or infrastructure MUST have a documented need and a rejected simpler
@@ -89,9 +97,10 @@ Use the Spec Kit flow to create a specification, plan the implementation, genera
 dependency-ordered tasks, implement, and assess convergence. The plan's Constitution Check MUST
 record how each principle is met or explicitly justify any exception before implementation.
 Tasks MUST include validation, service-contract, and documentation work required by the relevant
-principles. Reviewers MUST reject work that lacks traceability to an approved requirement,
-adequate evidence of validation, current operational documentation, or compliant dependency
-versioning.
+principles. Pull requests MUST use the approved branch workflow and identify the required CI
+evidence, review, and changeset status before merge. Reviewers MUST reject work that lacks
+traceability to an approved requirement, adequate evidence of validation, current operational
+documentation, compliant dependency versioning, or the required pull-request evidence.
 
 ## Governance
 
@@ -104,4 +113,4 @@ MINOR for new or materially expanded principles or sections, and PATCH for clari
 not alter obligations. Every plan and review MUST assess compliance; unresolved MUST-level
 violations block delivery unless this constitution is amended first.
 
-**Version**: 1.2.0 | **Ratified**: 2026-07-16 | **Last Amended**: 2026-07-16
+**Version**: 1.3.0 | **Ratified**: 2026-07-16 | **Last Amended**: 2026-07-16

@@ -159,6 +159,7 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX [P] Add required automated tests in tests/unit/
 - [ ] TXXX Security hardening
 - [ ] TXXX Run quickstart.md validation
+- [ ] TXXX Prepare pull request with required CI evidence, reviewer approval, and changeset status
 
 ---
 
