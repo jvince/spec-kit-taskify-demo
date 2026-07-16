@@ -15,6 +15,12 @@
     "incremental": true,
     "plugins": [{ "name": "next" }]
   },
-  "include": ["apps/**/*.ts", "apps/**/*.tsx", "packages/**/*.ts", "tests/**/*.ts"],
+  "include": [
+    "apps/**/*.ts",
+    "apps/**/*.tsx",
+    "packages/**/*.ts",
+    "services/**/*.ts",
+    "tests/**/*.ts"
+  ],
   "exclude": ["node_modules", ".next", "dist", "build"]
 }

@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS tasks (id TEXT PRIMARY KEY, project_id TEXT NOT NULL, title TEXT NOT NULL, assignee_user_id TEXT NOT NULL, status TEXT NOT NULL CHECK(status IN ('todo','in_progress','in_review','done')), version INTEGER NOT NULL);

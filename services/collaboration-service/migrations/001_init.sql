@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS comments (id TEXT PRIMARY KEY, task_id TEXT NOT NULL, author_user_id TEXT NOT NULL, body TEXT NOT NULL, created_at TEXT NOT NULL);

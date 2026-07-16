@@ -46,6 +46,16 @@ only one writer per database at a time. Each mutation remains short and transact
 busy handling is required. Reassess SQLite before scaling beyond the single-team workspace. See
 the official [SQLite WAL documentation index](https://www.sqlite.org/docs.html).
 
+## Decision: better-sqlite3 12.11.1 with SQL migrations
+
+**Rationale**: `better-sqlite3` provides a small synchronous SQLite interface that supports WAL
+configuration and short explicit transactions. A numbered SQL migration directory keeps each
+service's schema independently reviewable without adding a second migration framework.
+
+**Compatibility and security evidence**: Version 12.11.1 is pinned with matching type package
+7.6.13 and is validated under Node.js 24.16.0. `npm audit --omit=dev` must be recorded for each
+upgrade; the documented Next.js/PostCSS exception remains the only known audit finding.
+
 ## Decision: Active actor is a validated development-phase context, not authentication
 
 **Rationale**: The approved scope excludes login. Every request carries an active predefined-user
