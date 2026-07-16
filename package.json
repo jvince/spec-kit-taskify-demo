@@ -21,7 +21,7 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "test": "npm run test:unit && npm run test:contract && npm run test:integration && npm run test:e2e",
-    "test:unit": "vitest run --passWithNoTests",
+    "test:unit": "vitest run tests/unit --passWithNoTests",
     "test:contract": "vitest run tests/contract --passWithNoTests",
     "test:integration": "vitest run tests/integration --passWithNoTests",
     "test:e2e": "playwright test --pass-with-no-tests",
