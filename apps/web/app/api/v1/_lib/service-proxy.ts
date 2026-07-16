@@ -7,6 +7,8 @@ const CREDENTIAL_PATTERN = /^[A-Za-z0-9_-]{24,128}$/;
 
 /** Resolves the private upstream for one versioned resource without exposing it to browsers. */
 function serviceOrigin(path: readonly string[]): string | undefined {
+  if (path[0] === "projects" && path[2] === "tasks")
+    return process.env.TASKIFY_TASK_BOARD_SERVICE_ORIGIN;
   if (path[0] === "projects") return process.env.TASKIFY_PROJECT_SERVICE_ORIGIN;
   if (path[0] === "tasks")
     return path[2] === "comments"

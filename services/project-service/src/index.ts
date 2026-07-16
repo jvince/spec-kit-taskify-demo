@@ -2,3 +2,4 @@
 export { migrateProjectDatabase, openProjectDatabase } from "./db";
 export { seedProjectService } from "./seed";
 export { handleProjectRequest } from "./http";
+export { createProject, findProject, listProjects } from "./projects";
