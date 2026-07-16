@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: ${{ github.event_name == 'pull_request' && 0 || 1 }}
       - name: Fetch base branch for Changesets
         if: github.event_name == 'pull_request'
         run: git fetch origin main:main
