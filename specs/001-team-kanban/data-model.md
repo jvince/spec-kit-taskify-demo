@@ -18,8 +18,8 @@ SQLite database directly.
 
 | Field | Rules |
 |---|---|
-| id | Stable unique identifier; one of the five seeded users. |
-| displayName | Required, non-empty, unique within the workspace. |
+| id | Stable unique identifier; one of the five seeded users; the allow-list rejects all other values. |
+| displayName | Required trimmed text, 1–120 characters, unique within the workspace. |
 | role | Exactly `product_manager` or `engineer`; exactly one seeded product manager and four engineers. |
 
 ### Project
@@ -27,7 +27,7 @@ SQLite database directly.
 | Field | Rules |
 |---|---|
 | id | Stable unique identifier. |
-| name | Required trimmed text, 1–120 characters, unique within the workspace. |
+| name | Required trimmed text, 1–120 characters, using letters, numbers, spaces, and `- _ . , ' ( )`; unique within the workspace. |
 | createdByUserId | Must identify the product manager. |
 | createdAt | Immutable creation timestamp. |
 
@@ -37,7 +37,7 @@ SQLite database directly.
 |---|---|
 | id | Stable unique identifier. |
 | projectId | Required project-service identifier; must reference an existing project. |
-| title | Required trimmed text, 1–200 characters. |
+| title | Required trimmed text, 1–200 characters, using letters, numbers, spaces, and `- _ . , ' ( )`. |
 | assigneeUserId | Required seeded engineer identifier. |
 | status | One of `todo`, `in_progress`, `in_review`, `done`; initial value is `todo`. |
 | createdByUserId | Must identify the product manager. |
@@ -51,8 +51,12 @@ SQLite database directly.
 | id | Stable unique identifier. |
 | taskId | Required task-board-service identifier; must reference an existing task. |
 | authorUserId | Required seeded user identifier. |
-| body | Required trimmed text, 1–2,000 characters. |
+| body | Required trimmed text, 1–2,000 characters, using printable Unicode text excluding control characters. |
 | createdAt | Immutable creation timestamp. |
+
+Notification recipients exclude the actor. Assignment and reassignment target the new assignee;
+an engineer's status change targets the product manager; a product-manager status change targets
+the assignee; a comment targets the assignee and product manager when either is not its author.
 
 Comments are append-only: no update or delete lifecycle transition exists.
 
@@ -81,9 +85,19 @@ Comments are append-only: no update or delete lifecycle transition exists.
 |---|---|---|---|
 | Create project | Product manager | Valid unique name | Project created. |
 | Create task | Product manager | Valid project, title, engineer assignee | Task created in `todo`; assignment notification created. |
-| Assign/reassign task | Product manager | Valid engineer assignee; matching task version | Assignee changes; notification created. |
-| Move task | Current assignee or product manager | Valid status; matching task version | Status changes to any permitted status; notification created. |
+| Assign/reassign task | Product manager | Valid engineer assignee; matching task version; request has no status field | Assignee changes; new-assignee notification created. |
+| Move task | Current assignee or product manager | Valid status; matching task version; request has no assignee field | Status changes to any permitted status; designated-recipient notification created. |
 | Add comment | Any seeded user | Valid task and comment body | Immutable comment created; task assignee notified when the author differs. |
 
 Invalid identifiers, invalid enum values, stale versions, and unauthorized actor roles make no
-state change. A stale version returns a conflict so the client refreshes before retrying.
+state change. Concurrent mutations use the matching version as the compare-and-swap condition:
+exactly one may commit, and a stale version returns a conflict so the client refreshes before
+retrying. SQLite busy conditions retry only a bounded number of times; a request that cannot
+commit returns a safe failure and creates no notification.
+
+Every mutation validates its complete payload and rejects unexpected, missing, malformed, or
+duplicate fields before beginning a transaction. The owner persists its state and publishes any
+notification only after the transaction commits; a failed or unavailable downstream request is
+recorded for retry without exposing credentials or raw payloads. Services use authenticated,
+rotatable credentials and correlation IDs, validate calls independently, and do not access another
+service's database.

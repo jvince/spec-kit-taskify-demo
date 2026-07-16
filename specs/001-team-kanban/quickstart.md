@@ -33,6 +33,8 @@
 4. Confirm the product manager can move any task, while a different engineer cannot move it.
 5. Submit an unsupported status through the REST contract and confirm a validation error with no
    board change.
+6. Disconnect and reconnect one board, confirm it refreshes before another move, then complete a
+   keyboard status-change flow with visible focus and an announced result.
 
 ### Assignment and comments
 
@@ -42,6 +44,8 @@
    the task.
 3. Attempt empty, oversized, edit, and delete comment actions; confirm they fail without changing
    the original comment.
+4. Confirm notifications go only to the recipients defined for assignment, status changes, and
+   comments, never to the actor who caused the event.
 
 ### REST contract checks
 

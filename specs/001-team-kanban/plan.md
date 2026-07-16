@@ -44,7 +44,7 @@ columns, and in-app event notifications only
 | Principle | Pre-design evidence | Post-design result |
 |---|---|---|
 | I. Security-First Input Validation | Validate actor, IDs, enums, text bounds, payload shape, and role for every mutation. | PASS — contract and data model define explicit bounds, actor validation, and no-partial-change errors. |
-| II. Specification-First Delivery | Plan maps work to the four specified user stories and 15 functional requirements. | PASS — quickstart validates each primary journey. |
+| II. Specification-First Delivery | Plan maps work to the four specified user stories and 16 functional requirements. | PASS — quickstart validates each primary journey. |
 | III. Testable Outcomes | Require unit, contract, integration, and browser tests before delivery. | PASS — quickstart gives executable acceptance checks. |
 | IV. Microservice Architecture | Separate service ownership and no shared database. | PASS — four service-owned SQLite stores and documented v1 REST contract. |
 | V. Documentation Is a Deliverable | Publish contracts, data model, research decisions, quickstart, and service runbooks. | PASS — implementation tasks must add service/API/runbook documentation. |
@@ -52,8 +52,9 @@ columns, and in-app event notifications only
 | VII. Simplicity and Operational Clarity | Use REST plus SSE instead of bidirectional sockets; keep SQLite local per service. | PASS — research documents alternatives and scale boundary. |
 
 **Security exception boundary**: The active actor is deliberately not authenticated because login is
-explicitly out of scope. It is strictly a seeded, validated demo context; the plan prohibits
-external deployment without replacing it with real authentication.
+explicitly out of scope. It is strictly a seeded, validated local-demo context; externally exposed
+deployment fails closed until real authentication replaces it. Each service independently validates
+input and authorization, while authenticated service credentials are rotated and redacted.
 
 ## Project Structure
 

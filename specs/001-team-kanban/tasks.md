@@ -24,8 +24,8 @@ testable after the shared foundation is complete.
 - [ ] T001 Create the npm workspace configuration in package.json and apps/, services/, packages/, and tests/ directories.
 - [ ] T002 Configure TypeScript, linting, formatting, and test commands in tsconfig.json, eslint.config.mjs, prettier.config.mjs, and package.json.
 - [ ] T003 [P] Create the Next.js App Router shell in apps/web/app/layout.tsx and apps/web/app/page.tsx.
-- [ ] T004 [P] Create shared contract types from specs/001-team-kanban/contracts/openapi.yaml in packages/contracts/src/index.ts.
-- [ ] T005 [P] Create shared allow-list validation primitives in packages/validation/src/index.ts.
+- [ ] T004 [P] Create shared contract types, strict one-operation task patches, and safe error types from specs/001-team-kanban/contracts/openapi.yaml in packages/contracts/src/index.ts.
+- [ ] T005 [P] Create shared allow-list validation primitives for IDs, headers, strict payloads, text bounds, and permitted characters in packages/validation/src/index.ts.
 - [ ] T006 [P] Create seeded-user and sample-project fixtures in packages/test-support/src/seed.ts.
 - [ ] T007 Configure local service orchestration and environment documentation in docker-compose.yml and docs/development.md.
 - [ ] T008 Create CI quality gates for lint, type checks, unit tests, contract tests, integration tests, and end-to-end tests in .github/workflows/ci.yml.
@@ -48,9 +48,9 @@ and real-time event infrastructure required by every user story.
 - [ ] T015 Implement versioned REST error envelopes, validation failures, forbidden responses, not-found responses, and conflict responses in packages/contracts/src/errors.ts and apps/web/app/api/v1/_lib/response.ts.
 - [ ] T016 Implement authenticated service-to-service request credentials and request tracing in packages/contracts/src/service-auth.ts and packages/contracts/src/tracing.ts.
 - [ ] T017 Implement the Next.js backend-for-frontend REST proxy with validated X-Actor-Id forwarding in apps/web/app/api/v1/[...path]/route.ts.
-- [ ] T018 Implement notification event publishing and recipient-specific SSE subscriptions in services/notification-service/src/events.ts and services/notification-service/src/stream.ts.
-- [ ] T019 Add foundational unit and integration coverage for actor validation, service authentication, SQLite conflict handling, and SSE authorization in tests/unit/actor.test.ts, tests/integration/service-auth.test.ts, tests/integration/sqlite-conflict.test.ts, and tests/integration/notification-stream.test.ts.
-- [ ] T020 Document local setup, seed/reset procedures, API versioning, and the no-authentication deployment boundary in docs/development.md and docs/security-boundaries.md.
+- [ ] T018 Implement notification event publishing, recipient-specific listing, authenticated SSE subscriptions, reconnect refresh, and retry-safe event delivery in services/notification-service/src/events.ts and services/notification-service/src/stream.ts.
+- [ ] T019 Add foundational unit and integration coverage for strict actor/payload validation, service authentication, SQLite conflict handling, notification transaction failures, SSE authorization, and reconnect refresh in tests/unit/actor.test.ts, tests/integration/service-auth.test.ts, tests/integration/sqlite-conflict.test.ts, and tests/integration/notification-stream.test.ts.
+- [ ] T020 Document local setup, seed/reset procedures, API versioning, credential rotation/redaction, safe diagnostics, and the fail-closed no-authentication deployment boundary in docs/development.md and docs/security-boundaries.md.
 
 **Checkpoint**: Service ownership, validation, persistence, and real-time infrastructure are ready;
 user-story work can proceed.
@@ -162,7 +162,7 @@ product manager, four engineers, and three sample projects are available.
 **Purpose**: Complete notification visibility, operational documentation, accessibility, security,
 and release validation across all user stories.
 
-- [ ] T047 [P] Implement recipient notification list and stream REST handlers in apps/web/app/api/v1/notifications/route.ts and apps/web/app/api/v1/notifications/stream/route.ts.
+- [ ] T047 [P] Implement recipient notification list and stream REST handlers, including safe failure categories and correlation IDs, in apps/web/app/api/v1/notifications/route.ts and apps/web/app/api/v1/notifications/stream/route.ts.
 - [ ] T048 [P] Implement in-app notification list and live refresh UI in apps/web/components/notification-list.tsx and apps/web/app/layout.tsx.
 - [ ] T049 [P] Add notification REST and event-stream contract coverage in tests/contract/notifications.contract.test.ts.
 - [ ] T050 Add accessibility requirements verification and keyboard drag-and-drop coverage in tests/e2e/kanban-accessibility.spec.ts and docs/accessibility.md.

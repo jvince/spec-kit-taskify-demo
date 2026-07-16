@@ -22,14 +22,14 @@ paths:
   /projects/{projectId}:
     get:
       summary: Get a project and its board summary
-      parameters: [ { $ref: '#/components/parameters/ProjectId' } ]
+      parameters: [ { $ref: '#/components/parameters/ProjectId' }, { $ref: '#/components/parameters/ActorId' } ]
       responses:
         '200': { $ref: '#/components/responses/Project' }
         '404': { $ref: '#/components/responses/NotFound' }
   /projects/{projectId}/tasks:
     get:
       summary: List a project's tasks
-      parameters: [ { $ref: '#/components/parameters/ProjectId' } ]
+      parameters: [ { $ref: '#/components/parameters/ProjectId' }, { $ref: '#/components/parameters/ActorId' } ]
       responses:
         '200': { $ref: '#/components/responses/TaskList' }
     post:
@@ -54,7 +54,7 @@ paths:
   /tasks/{taskId}/comments:
     get:
       summary: List immutable task comments
-      parameters: [ { $ref: '#/components/parameters/TaskId' } ]
+      parameters: [ { $ref: '#/components/parameters/TaskId' }, { $ref: '#/components/parameters/ActorId' } ]
       responses:
         '200': { $ref: '#/components/responses/CommentList' }
     post:
@@ -64,6 +64,7 @@ paths:
       responses:
         '201': { $ref: '#/components/responses/Comment' }
         '400': { $ref: '#/components/responses/ValidationError' }
+        '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
   /notifications:
     get:
@@ -84,10 +85,10 @@ components:
       name: X-Actor-Id
       in: header
       required: true
-      schema: { type: string, minLength: 1 }
-      description: Validated identifier of a seeded user; this is not authentication in phase one.
-    ProjectId: { name: projectId, in: path, required: true, schema: { type: string } }
-    TaskId: { name: taskId, in: path, required: true, schema: { type: string } }
+      schema: { type: string, pattern: '^[a-z][a-z0-9-]{2,63}$' }
+      description: Allow-listed seeded-user identifier. This is a local-demo actor context, not authentication.
+    ProjectId: { name: projectId, in: path, required: true, schema: { type: string, pattern: '^prj-[a-z0-9-]{1,60}$' } }
+    TaskId: { name: taskId, in: path, required: true, schema: { type: string, pattern: '^tsk-[a-z0-9-]{1,60}$' } }
   requestBodies:
     ProjectInput:
       required: true
@@ -117,21 +118,38 @@ components:
     ProjectInput:
       type: object
       required: [name]
-      properties: { name: { type: string, minLength: 1, maxLength: 120 } }
+      additionalProperties: false
+      properties: { name: { type: string, minLength: 1, maxLength: 120, pattern: "^[A-Za-z0-9 _.,'()\\-]+$" } }
     TaskInput:
       type: object
       required: [title, assigneeUserId]
-      properties: { title: { type: string, minLength: 1, maxLength: 200 }, assigneeUserId: { type: string } }
+      additionalProperties: false
+      properties: { title: { type: string, minLength: 1, maxLength: 200, pattern: "^[A-Za-z0-9 _.,'()\\-]+$" }, assigneeUserId: { type: string, pattern: '^[a-z][a-z0-9-]{2,63}$' } }
     TaskPatch:
       type: object
-      required: [version]
-      properties: { assigneeUserId: { type: string }, status: { type: string, enum: [todo, in_progress, in_review, done] }, version: { type: integer, minimum: 1 } }
+      oneOf:
+        - type: object
+          required: [assigneeUserId, version]
+          additionalProperties: false
+          properties: { assigneeUserId: { type: string, pattern: '^[a-z][a-z0-9-]{2,63}$' }, version: { type: integer, minimum: 1 } }
+        - type: object
+          required: [status, version]
+          additionalProperties: false
+          properties: { status: { type: string, enum: [todo, in_progress, in_review, done] }, version: { type: integer, minimum: 1 } }
     CommentInput:
       type: object
       required: [body]
-      properties: { body: { type: string, minLength: 1, maxLength: 2000 } }
+      additionalProperties: false
+      properties: { body: { type: string, minLength: 1, maxLength: 2000, pattern: '^[^\\u0000-\\u001F\\u007F]+$' } }
     Project: { type: object, required: [id, name, createdByUserId, createdAt], properties: { id: { type: string }, name: { type: string }, createdByUserId: { type: string }, createdAt: { type: string, format: date-time } } }
     Task: { type: object, required: [id, projectId, title, assigneeUserId, status, version], properties: { id: { type: string }, projectId: { type: string }, title: { type: string }, assigneeUserId: { type: string }, status: { type: string, enum: [todo, in_progress, in_review, done] }, version: { type: integer } } }
     Comment: { type: object, required: [id, taskId, authorUserId, body, createdAt], properties: { id: { type: string }, taskId: { type: string }, authorUserId: { type: string }, body: { type: string }, createdAt: { type: string, format: date-time } } }
     Notification: { type: object, required: [id, recipientUserId, eventType, taskId, createdAt], properties: { id: { type: string }, recipientUserId: { type: string }, eventType: { type: string, enum: [task_assigned, task_reassigned, task_status_changed, comment_added] }, taskId: { type: string }, createdAt: { type: string, format: date-time } } }
-    Error: { type: object, required: [code, message], properties: { code: { type: string }, message: { type: string } } }
+    Error:
+      type: object
+      additionalProperties: false
+      required: [code, message, correlationId]
+      properties:
+        code: { type: string, enum: [validation_error, forbidden, not_found, conflict] }
+        message: { type: string, description: Safe category message with no internal diagnostics or sensitive values. }
+        correlationId: { type: string, pattern: '^req-[a-z0-9-]{8,64}$' }

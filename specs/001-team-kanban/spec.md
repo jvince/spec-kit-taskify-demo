@@ -21,6 +21,12 @@ projects, no login for this first phase."
   task to one of the four engineers.
 - Q: What comment permissions apply? → A: All predefined users may add comments; comments cannot
   be edited or deleted in this phase.
+- Q: Who receives notifications? → A: Assignment and reassignment notify the new assignee. A
+  status change notifies the product manager when an engineer makes the change, or the assignee
+  when the product manager makes it. A comment notifies the task assignee and product manager
+  when either is not the author. The actor never receives their own notification.
+- Q: May a task update change both status and assignee? → A: No. Each update changes exactly one
+  of status or assignee and includes the task version.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -47,6 +53,8 @@ assign the task to an engineer, and confirm the task appears in that project wit
    project or Kanban column.
 4. **Given** an invalid, missing, or oversized project name or task title, **When** a user submits
    it, **Then** the system rejects it with a clear message and does not create or change data.
+5. **Given** a task assignment or reassignment, **When** it is accepted, **Then** the new
+   assignee can list one notification for that event and the acting product manager receives none.
 
 ---
 
@@ -70,6 +78,9 @@ each defined column, and confirm the board shows the task in the selected column
    viewing the project.
 3. **Given** a requested column value outside the four defined columns, **When** a task update is
    submitted, **Then** the system rejects the request and preserves the task's existing column.
+4. **Given** a connected board, **When** an accepted status change occurs, **Then** every
+   connected view of that project shows the new column within two seconds of acceptance; a view
+   that reconnects refreshes its project board before accepting a further move.
 
 ---
 
@@ -92,6 +103,8 @@ the comment shows its author and is visible when another predefined user views t
    system rejects it with a clear message and does not add a comment.
 3. **Given** an existing comment, **When** a user attempts to edit or delete it, **Then** the
    system preserves the original comment and reports that comment changes are unavailable.
+4. **Given** a new comment, **When** it is accepted, **Then** each intended recipient other than
+   the author can list one comment notification.
 
 ---
 
@@ -119,6 +132,9 @@ product manager and four engineers, and that exactly three sample projects are a
 - A task cannot be assigned to a person outside the predefined five-person roster.
 - A task remains associated with its original project when its state changes or a comment is added.
 - Comments are immutable in this phase: they cannot be edited or deleted after creation.
+- A task card shows its title, assignee, and current Kanban column; its task detail shows comments
+  and their authors. An empty project board, comment list, or notification list states that no
+  items are available.
 - The system preserves existing data when a submitted project, task, assignment, move, or comment
   fails validation.
 - In this phase, a selected predefined user represents the active actor; no credential collection,
@@ -158,7 +174,15 @@ product manager and four engineers, and that exactly three sample projects are a
   comment to be edited or deleted in this phase.
 - **FR-015**: The system MUST create a notification for a task assignment, task reassignment,
   task status change, or new task comment and allow its intended predefined recipient to list
-  their notifications.
+  their notifications. The recipient rules are: the new assignee for assignment or reassignment;
+  the product manager for an engineer's status change; the assignee for a product-manager status
+  change; and the assignee and product manager for a comment when they are not its author. The
+  actor MUST NOT receive their own notification.
+- **FR-016**: The system MUST accept a task update that changes exactly one of assignee or status,
+  together with a positive task version; a request that attempts both, neither, or an unsupported
+  field MUST be rejected without changing the task.
+- **FR-017**: The system MUST show each task's title, assignee, and status on its board card, and
+  provide a task detail that shows immutable comments with their authors.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -182,16 +206,38 @@ product manager and four engineers, and that exactly three sample projects are a
   produce a safe, clear outcome without partial data changes.
 - **QC-004**: The primary project-board view MUST show a project and its task locations within two
   seconds for the initial workspace of three projects and five users.
+- **QC-005**: Every board operation and form control MUST be keyboard operable, show visible
+  keyboard focus, and provide an announced text alternative for a task status change.
+- **QC-006**: For an accepted task mutation, a project board already connected to its update
+  stream MUST reflect the accepted state within two seconds. A disconnected board MUST refresh
+  the project before it permits another mutation after reconnection. A connected notification list
+  MUST likewise show an accepted notification for its recipient within two seconds.
+- **QC-007**: The active-actor selector MUST be available only in the local seeded-demo
+  deployment; any externally exposed deployment MUST fail closed until real authentication and
+  authorization requirements replace this phase's actor model.
+- **QC-008**: User-visible errors MUST identify only the safe failure category (invalid input,
+  unavailable record, forbidden action, or stale version). Diagnostics MUST use a correlation ID
+  and MUST NOT include credentials, raw request bodies, or other sensitive values.
 
 ### Service Boundaries and Contracts
 
-- **Service Ownership**: Project management owns projects; task-board management owns tasks,
-  assignments, and workflow state; collaboration owns comments. Each capability owns the data it
-  changes.
+- **Service Ownership**: Project management owns users and projects; task-board management owns
+  tasks, assignments, and workflow state; collaboration owns comments; notification management
+  owns notification records and update streams. Each capability owns the data it changes.
 - **Contract Changes**: The initial feature defines documented, versioned contracts for project,
   task-board, and collaboration interactions; no prior contract compatibility is required.
 - **Trust Boundaries**: A selected predefined user is the active actor. Role actions, assignments,
-  column values, and all submitted text are validated before a capability changes its owned data.
+  column values, all identifiers, headers, request fields, and submitted text are validated before
+  a capability changes its owned data. Every service repeats validation and authorization for its
+  owned mutation; it does not trust a prior service or the frontend implicitly. Service-to-service
+  requests use authenticated credentials that are rotated and redacted from diagnostics.
+- **Failure and Compatibility Rules**: Unknown request fields, malformed or missing values,
+  unknown identifiers, unauthorized roles, stale versions, and unavailable referenced records
+  MUST be rejected before a mutation. A rejected mutation MUST create no partial record or
+  notification. Version 1 contracts use stable error categories and remain compatible within the
+  phase; a breaking change requires a new contract version. Service credentials originate only
+  from deployment configuration, are rotatable, and are rejected when missing, malformed, or
+  expired; service unavailability preserves committed state and records a retry-safe event.
 - **Operational Documentation**: The initial release documents the public behavior, input rules,
   service contracts, configuration, and operating steps for the seeded workspace.
 
@@ -210,6 +256,10 @@ product manager and four engineers, and that exactly three sample projects are a
 - **SC-005**: A reviewer can verify the five predefined users and three sample projects from a
   newly initialized workspace in under one minute.
 - **SC-006**: A user can add a valid comment and see its author on the task in under 30 seconds.
+- **SC-007**: In acceptance testing, 100% of accepted assignment, reassignment, status-change,
+  and comment events create notifications only for the recipients defined in FR-015.
+- **SC-008**: In acceptance testing, 100% of keyboard status-change flows provide a visible focus
+  indicator and an announced status result.
 
 ## Assumptions
 
@@ -219,7 +269,7 @@ product manager and four engineers, and that exactly three sample projects are a
   them; engineers are the eligible task assignees and may move their assigned tasks. All five
   predefined users may add comments, which are immutable in this phase.
 - Each task has one assignee and belongs to one project; subtasks, task due dates, labels,
-  attachments, notifications, and task deletion are out of scope.
+  attachments, notification delivery channels or settings, and task deletion are out of scope.
 - The three sample projects and five predefined users are fixed initial workspace content; editing
   the roster or creating additional user accounts is out of scope.
 - The first phase targets a single shared team workspace and does not include multiple teams,
