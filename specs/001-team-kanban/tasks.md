@@ -47,9 +47,9 @@ and real-time event infrastructure required by every user story.
 - [ ] T014 Implement validated active-actor resolution and role authorization in packages/validation/src/actor.ts and packages/validation/src/authorization.ts.
 - [ ] T015 Implement versioned REST error envelopes, validation failures, forbidden responses, not-found responses, and conflict responses in packages/contracts/src/errors.ts and apps/web/app/api/v1/_lib/response.ts.
 - [ ] T016 Implement authenticated service-to-service request credentials and request tracing in packages/contracts/src/service-auth.ts and packages/contracts/src/tracing.ts.
-- [ ] T017 Implement the Next.js backend-for-frontend REST proxy with validated X-Actor-Id forwarding in apps/web/app/api/v1/[...path]/route.ts.
-- [ ] T018 Implement notification event publishing, recipient-specific listing, authenticated SSE subscriptions, reconnect refresh, and retry-safe event delivery in services/notification-service/src/events.ts and services/notification-service/src/stream.ts.
-- [ ] T019 Add foundational unit and integration coverage for strict actor/payload validation, service authentication, SQLite conflict handling, notification transaction failures, SSE authorization, and reconnect refresh in tests/unit/actor.test.ts, tests/integration/service-auth.test.ts, tests/integration/sqlite-conflict.test.ts, and tests/integration/notification-stream.test.ts.
+- [ ] T017 Implement the Next.js backend-for-frontend REST proxy with validated X-Actor-Id forwarding and a deployment-mode guard that fails closed outside the seeded local-demo environment in apps/web/app/api/v1/[...path]/route.ts and apps/web/app/api/v1/_lib/deployment-mode.ts.
+- [ ] T018 Implement notification event publishing, the complete FR-015 recipient matrix, recipient-specific listing, authenticated SSE subscriptions, reconnect refresh, retry-safe event delivery, and notification REST handlers in services/notification-service/src/events.ts, services/notification-service/src/stream.ts, apps/web/app/api/v1/notifications/route.ts, and apps/web/app/api/v1/notifications/stream/route.ts.
+- [ ] T019 Add foundational unit, contract, and integration coverage for strict actor/payload validation, service authentication, deployment-mode fail-closed behavior, SQLite conflict handling, notification transaction failures, complete notification recipients, SSE authorization, reconnect refresh, and notification REST responses in tests/unit/actor.test.ts, tests/contract/notifications.contract.test.ts, tests/integration/service-auth.test.ts, tests/integration/sqlite-conflict.test.ts, tests/integration/notification-stream.test.ts, and tests/integration/deployment-mode.test.ts.
 - [ ] T020 Document local setup, seed/reset procedures, API versioning, credential rotation/redaction, safe diagnostics, and the fail-closed no-authentication deployment boundary in docs/development.md and docs/security-boundaries.md.
 
 **Checkpoint**: Service ownership, validation, persistence, and real-time infrastructure are ready;
@@ -68,7 +68,7 @@ notification.
 
 ### Tests for User Story 1
 
-- [ ] T021 [P] [US1] Add project and task REST contract tests in tests/contract/projects-tasks.contract.test.ts.
+- [ ] T021 [P] [US1] Add project and task REST contract tests, including task patches that reject both or neither mutable field, in tests/contract/projects-tasks.contract.test.ts.
 - [ ] T022 [P] [US1] Add authorization and invalid-input integration tests in tests/integration/project-task-authorization.test.ts.
 - [ ] T023 [P] [US1] Add product-manager project/task browser flow coverage in tests/e2e/project-task-management.spec.ts.
 
@@ -96,7 +96,7 @@ engineer is forbidden.
 
 ### Tests for User Story 2
 
-- [ ] T029 [P] [US2] Add task status PATCH contract tests for permitted statuses and stale versions in tests/contract/task-status.contract.test.ts.
+- [ ] T029 [P] [US2] Add task status PATCH contract tests for permitted statuses, stale versions, and rejection of both or neither mutable field in tests/contract/task-status.contract.test.ts.
 - [ ] T030 [P] [US2] Add task-move authorization and notification integration tests in tests/integration/task-status-authorization.test.ts.
 - [ ] T031 [P] [US2] Add drag-and-drop and real-time multi-client browser coverage in tests/e2e/kanban-realtime.spec.ts.
 
@@ -123,13 +123,13 @@ confirm attempted edit/delete actions preserve the original comment.
 ### Tests for User Story 3
 
 - [ ] T037 [P] [US3] Add comment REST contract tests, including immutable-operation responses, in tests/contract/comments.contract.test.ts.
-- [ ] T038 [P] [US3] Add comment validation, author attribution, and notification integration tests in tests/integration/comments.test.ts.
+- [ ] T038 [P] [US3] Add comment validation, author attribution, and notification-recipient integration tests for the assignee and product manager when either is not the author in tests/integration/comments.test.ts.
 - [ ] T039 [P] [US3] Add multi-user task-comment browser coverage in tests/e2e/task-comments.spec.ts.
 
 ### Implementation for User Story 3
 
 - [ ] T040 [US3] Implement append-only comment validation, persistence, and task-reference checks in services/collaboration-service/src/comments.ts.
-- [ ] T041 [US3] Publish comment notifications for the task assignee when the author differs in services/collaboration-service/src/comments.ts and services/notification-service/src/events.ts.
+- [ ] T041 [US3] Publish comment notifications for the task assignee and product manager whenever either is not the author, excluding the actor, in services/collaboration-service/src/comments.ts and services/notification-service/src/events.ts.
 - [ ] T042 [US3] Implement comment list/create REST handlers and task-card comment UI in apps/web/app/api/v1/tasks/[taskId]/comments/route.ts and apps/web/components/task-comments.tsx.
 
 **Checkpoint**: Comments are attributed, immutable, validated, and visible to all predefined users.
@@ -162,13 +162,11 @@ product manager, four engineers, and three sample projects are available.
 **Purpose**: Complete notification visibility, operational documentation, accessibility, security,
 and release validation across all user stories.
 
-- [ ] T047 [P] Implement recipient notification list and stream REST handlers, including safe failure categories and correlation IDs, in apps/web/app/api/v1/notifications/route.ts and apps/web/app/api/v1/notifications/stream/route.ts.
-- [ ] T048 [P] Implement in-app notification list and live refresh UI in apps/web/components/notification-list.tsx and apps/web/app/layout.tsx.
-- [ ] T049 [P] Add notification REST and event-stream contract coverage in tests/contract/notifications.contract.test.ts.
-- [ ] T050 Add accessibility requirements verification and keyboard drag-and-drop coverage in tests/e2e/kanban-accessibility.spec.ts and docs/accessibility.md.
-- [ ] T051 Add performance, concurrency, input-validation, and no-sensitive-diagnostics coverage in tests/integration/performance-boundary.test.ts, tests/integration/input-validation.test.ts, and tests/integration/diagnostics.test.ts.
-- [ ] T052 Update API, service, deployment, and operational documentation in docs/api.md, docs/deployment.md, docs/runbook.md, and README.md.
-- [ ] T053 Run the end-to-end quickstart validation and record results in specs/001-team-kanban/quickstart.md.
+- [ ] T047 [P] Implement the in-app recipient notification list and live refresh UI in apps/web/components/notification-list.tsx and apps/web/app/layout.tsx.
+- [ ] T048 Add accessibility requirements verification and keyboard drag-and-drop coverage in tests/e2e/kanban-accessibility.spec.ts and docs/accessibility.md.
+- [ ] T049 Add performance, concurrency, input-validation, and no-sensitive-diagnostics coverage in tests/integration/performance-boundary.test.ts, tests/integration/input-validation.test.ts, and tests/integration/diagnostics.test.ts.
+- [ ] T050 Update API, service, deployment, and operational documentation in docs/api.md, docs/deployment.md, docs/runbook.md, and README.md.
+- [ ] T051 Run the end-to-end quickstart validation and record results in specs/001-team-kanban/quickstart.md.
 
 ---
 
@@ -205,7 +203,7 @@ US1 + US2 + US3 + US4 ──> Polish and release validation
 - Within each user story, all tasks marked `[P]` are parallelizable test tasks.
 - US3 and US4 may proceed in parallel with US2 after the foundation, subject to seeded-task
   availability for US3.
-- T047–T052 can run in parallel after their dependent services and UI exist.
+- T047–T050 can run in parallel after their dependent services and UI exist.
 
 ## Implementation Strategy
 
