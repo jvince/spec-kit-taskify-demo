@@ -41,6 +41,13 @@ npm run test
 The test commands accept empty suites during Phase 1. Later phases add unit, contract,
 integration, and browser tests to their corresponding directories.
 
+## Dependency management
+
+Use exact stable versions in every committed package manifest; do not use `latest`, wildcard, or
+range specifiers. Commit the compatible lockfile and use `npm ci` for CI and reproducible local
+validation. Record dependency additions or upgrades with their compatibility and vulnerability
+evidence. Any exception requires a documented scope, mitigation, owner, and review or expiry date.
+
 ## Dependency security note
 
 The current stable Next.js release vendors a PostCSS version flagged by GHSA-qx2v-qp2m-jg93.

@@ -1,18 +1,16 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.0 -> 1.1.0
-- Modified principles: I Specification-First Delivery -> I Security-First Input Validation;
-  II Testable Outcomes -> III Testable Outcomes; III Security and Data Integrity by Design ->
-  I Security-First Input Validation; IV Incremental, Reviewable Delivery -> VI Incremental,
-  Reviewable Delivery; V Simplicity and Operational Clarity -> VII Simplicity and Operational
-  Clarity
-- Added sections: IV Microservice Architecture; V Documentation Is a Deliverable
+- Version change: 1.1.0 -> 1.2.0
+- Modified principles: VII Simplicity and Operational Clarity (expanded with deterministic
+  dependency-management requirements)
+- Added sections: none
 - Removed sections: none
 - Templates requiring updates:
-  - ✅ updated: .specify/templates/plan-template.md
-  - ✅ updated: .specify/templates/tasks-template.md
-  - ✅ updated: .specify/templates/spec-template.md
-- Follow-up TODOs: none
+  - updated: .specify/templates/plan-template.md
+  - updated: .specify/templates/tasks-template.md
+  - updated: .specify/templates/spec-template.md
+- Follow-up TODOs: Replace the existing floating dependency declarations with the exact versions
+  already validated in package-lock.json in a dedicated implementation change.
 -->
 # Taskify Constitution
 
@@ -57,16 +55,22 @@ understood or operated is incomplete.
 
 ### VI. Incremental, Reviewable Delivery
 Work MUST be organized into small, independently usable user-story increments, ordered by
-priority. Each increment MUST be demonstrable without relying on later stories, and code
-review MUST verify its requirements, tests, and constitution compliance. Rationale: small
-increments expose misunderstanding early and keep the project releasable.
+priority. Each increment MUST be demonstrable without relying on later stories, and code review
+MUST verify its requirements, tests, and constitution compliance. Rationale: small increments
+expose misunderstanding early and keep the project releasable.
 
 ### VII. Simplicity and Operational Clarity
 The simplest design that satisfies approved requirements MUST be preferred. New dependencies,
 abstractions, services, or infrastructure MUST have a documented need and a rejected simpler
 alternative when they add material complexity. Production-affecting behavior MUST emit useful,
-privacy-safe diagnostics appropriate to the system. Rationale: deliberate simplicity makes
-Taskify easier to operate, change, and trust.
+privacy-safe diagnostics appropriate to the system. Direct dependencies and development tools
+MUST use exact stable versions in committed manifests; floating ranges, wildcard versions, and
+tags such as `latest` are prohibited. A compatible lockfile MUST be committed and CI MUST install
+from it reproducibly. Dependency additions and upgrades MUST be deliberate, reviewable changes
+that record the selected version, compatibility evidence, and vulnerability-scan result. A known
+vulnerability or an exception to exact pinning requires a documented scope, mitigation, owner,
+and review or expiry date. Rationale: deliberate simplicity and deterministic supply-chain inputs
+make Taskify easier to operate, change, and trust.
 
 ## Quality and Delivery Constraints
 
@@ -76,7 +80,8 @@ decisions. Service contracts MUST define versioning, error semantics, authentica
 compatibility expectations. Requirements that affect users or operations MUST state measurable
 success criteria or an explicit reason why a measure is not applicable. A change is not complete
 until its code documentation, contracts, configuration, migration notes, runbooks, and diagnostics
-are updated where applicable.
+are updated where applicable. Plans that add or upgrade dependencies MUST record the exact
+versions, lockfile and clean-install validation, compatibility evidence, and vulnerability status.
 
 ## Development Workflow
 
@@ -85,7 +90,8 @@ dependency-ordered tasks, implement, and assess convergence. The plan's Constitu
 record how each principle is met or explicitly justify any exception before implementation.
 Tasks MUST include validation, service-contract, and documentation work required by the relevant
 principles. Reviewers MUST reject work that lacks traceability to an approved requirement,
-adequate evidence of validation, or current operational documentation.
+adequate evidence of validation, current operational documentation, or compliant dependency
+versioning.
 
 ## Governance
 
@@ -98,4 +104,4 @@ MINOR for new or materially expanded principles or sections, and PATCH for clari
 not alter obligations. Every plan and review MUST assess compliance; unresolved MUST-level
 violations block delivery unless this constitution is amended first.
 
-**Version**: 1.1.0 | **Ratified**: 2026-07-16 | **Last Amended**: 2026-07-16
+**Version**: 1.2.0 | **Ratified**: 2026-07-16 | **Last Amended**: 2026-07-16

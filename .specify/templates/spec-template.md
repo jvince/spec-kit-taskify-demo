@@ -109,7 +109,8 @@
   Record every user-controlled input and trust boundary, its allow-list validation rules, and its
   authorization requirement. Address service ownership and contracts, sensitive or persisted data,
   performance, reliability, accessibility, compatibility, and privacy-safe diagnostics. State why
-  an otherwise relevant category is N/A.
+  an otherwise relevant category is N/A. For each dependency addition or upgrade, record the exact
+  version, compatibility and vulnerability evidence, and any approved exception.
 -->
 
 - **QC-001**: [Constraint or N/A rationale]

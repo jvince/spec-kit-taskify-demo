@@ -51,7 +51,7 @@ be documented in plan.md with the reason automation is not feasible.
 **Purpose**: Project initialization and basic structure
 
 - [ ] T001 Create project structure per implementation plan
-- [ ] T002 Initialize [language] project with [framework] dependencies
+- [ ] T002 Initialize [language] project with exact-version [framework] dependencies, a committed lockfile, and compatibility/vulnerability validation
 - [ ] T003 [P] Configure linting and formatting tools
 
 ---
