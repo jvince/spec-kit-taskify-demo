@@ -45,8 +45,10 @@ it, and any proposed exception. The plan MUST cover: traceability to independent
 stories; automated validation; input-validation and threat-model decisions; service boundaries,
 data ownership, and versioned contracts; documentation and runbook changes; incremental delivery;
 dependency versions, lockfile validation, compatibility evidence, and vulnerability status; and
-any material complexity or operational-diagnostic decision. A MUST-level exception requires an
-approved constitution amendment before implementation.
+any material complexity or operational-diagnostic decision. It MUST also identify the topic
+branch and pull-request evidence required for delivery, including CI gates, reviewer approval,
+and any required changeset. A MUST-level exception requires an approved constitution amendment
+before implementation.
 
 ## Project Structure
 

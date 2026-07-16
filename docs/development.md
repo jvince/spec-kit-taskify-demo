@@ -42,9 +42,15 @@ docker compose up
 The Compose configuration mounts the workspace for local development and persists only installed
 Node modules in its named Docker volume. Do not place secrets in the repository or Compose file.
 
-## Quality gates
+## Pull-request workflow and quality gates
 
-Run each required gate before opening a change:
+Create a topic branch for every code, configuration, contract, or deployment change and open a
+pull request to `main`; direct pushes are reserved for documented emergency remediations. Link
+the relevant Spec Kit artifacts and include a changeset for release-relevant work. Before merge,
+the pull request requires all CI checks to pass and one maintainer approval. Configure GitHub
+branch protection on `main` to enforce those requirements.
+
+Run each required gate before opening or updating the pull request:
 
 ```sh
 npm run lint
