@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js 22 or later and npm 10 or later, or Docker Desktop with Compose support.
+- Node.js 24.16.0 and npm 11.13.0, or Docker Desktop with Compose support.
 - Do not create production-facing deployments from this Phase 1 foundation: no authentication
   exists yet, and Phase 2 will explicitly fail closed outside the local seeded-demo environment.
 
@@ -54,3 +54,6 @@ The current stable Next.js release vendors a PostCSS version flagged by GHSA-qx2
 The affected PostCSS path runs only while building the application. Taskify's build must therefore
 use only reviewed repository sources; it must never compile untrusted CSS. Upgrade Next.js as soon
 as a stable release includes PostCSS 8.5.10 or later, then re-run `npm audit --omit=dev`.
+
+**Exception record**: Scope is the nested build-time PostCSS dependency; mitigation is reviewed
+source-only builds. Owner: Taskify maintainers. Review date: 2026-08-16.

@@ -1,8 +1,8 @@
 services:
   web:
-    image: node:24-bookworm
+    image: node:24.16.0-bookworm
     working_dir: /workspace
-    command: sh -c "npm install && npm run dev -- --hostname 0.0.0.0"
+    command: sh -c "npm ci && npm run dev -- --hostname 0.0.0.0"
     ports:
       - "3000:3000"
     volumes:
