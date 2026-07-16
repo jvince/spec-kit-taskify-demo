@@ -24,9 +24,13 @@
     "test:unit": "vitest run --passWithNoTests",
     "test:contract": "vitest run --passWithNoTests --dir tests/contract",
     "test:integration": "vitest run --passWithNoTests --dir tests/integration",
-    "test:e2e": "playwright test --pass-with-no-tests"
+    "test:e2e": "playwright test --pass-with-no-tests",
+    "changeset": "changeset",
+    "changeset:status": "changeset status",
+    "changeset:version": "changeset version"
   },
   "devDependencies": {
+    "@changesets/cli": "2.31.0",
     "@eslint/js": "latest",
     "@playwright/test": "latest",
     "@types/node": "latest",
