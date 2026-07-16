@@ -14,10 +14,12 @@ service streams accepted changes to connected clients so board views refresh in 
 
 ## Technical Context
 
-**Language/Version**: TypeScript on the current Node.js LTS release
+**Language/Version**: TypeScript 6.0.3 on Node.js 24.16.0 with npm 11.13.0
 
-**Primary Dependencies**: Next.js App Router, React, SQLite driver and migration tool, schema
-validation library, drag-and-drop library, and test runner
+**Primary Dependencies**: Next.js 16.2.10, React 19.2.7, React DOM 19.2.7, ESLint 10.7.0,
+Prettier 3.9.5, Vitest 4.1.10, Playwright 1.61.1, and Changesets 2.31.0. SQLite, schema
+validation, drag-and-drop, and migration dependencies are deferred until an exact stable version,
+compatibility evidence, and vulnerability result are recorded before their introduction.
 
 **Storage**: One SQLite database per service in WAL mode; no cross-service database access
 
@@ -34,7 +36,8 @@ seconds; propagate accepted board updates to connected local clients within two 
 
 **Constraints**: No login or credentials; every external input is allow-list validated; role checks
 use a validated seeded active actor; service calls are authenticated; SQLite writes are short,
-transactional, and conflict-aware; comments are immutable
+transactional, and conflict-aware; comments are immutable; direct dependencies, tools, and runtime
+images use exact stable versions with a committed lockfile and `npm ci` validation
 
 **Scale/Scope**: One shared workspace with five seeded users, three sample projects, four Kanban
 columns, and in-app event notifications only
@@ -44,17 +47,23 @@ columns, and in-app event notifications only
 | Principle | Pre-design evidence | Post-design result |
 |---|---|---|
 | I. Security-First Input Validation | Validate actor, IDs, enums, text bounds, payload shape, and role for every mutation. | PASS — contract and data model define explicit bounds, actor validation, and no-partial-change errors. |
-| II. Specification-First Delivery | Plan maps work to the four specified user stories and 16 functional requirements. | PASS — quickstart validates each primary journey. |
+| II. Specification-First Delivery | Plan maps work to the four specified user stories and 17 functional requirements. | PASS — quickstart validates each primary journey. |
 | III. Testable Outcomes | Require unit, contract, integration, and browser tests before delivery. | PASS — quickstart gives executable acceptance checks. |
 | IV. Microservice Architecture | Separate service ownership and no shared database. | PASS — four service-owned SQLite stores and documented v1 REST contract. |
 | V. Documentation Is a Deliverable | Publish contracts, data model, research decisions, quickstart, and service runbooks. | PASS — implementation tasks must add service/API/runbook documentation. |
 | VI. Incremental, Reviewable Delivery | Build foundation then independently validate project/task, board, comments, and seed-workspace stories. | PASS — tasks can be grouped by user story. |
-| VII. Simplicity and Operational Clarity | Use REST plus SSE instead of bidirectional sockets; keep SQLite local per service. | PASS — research documents alternatives and scale boundary. |
+| VII. Simplicity and Operational Clarity | Use REST plus SSE instead of bidirectional sockets; keep SQLite local per service; pin every direct dependency and runtime image. | PASS — lockfile, `npm ci`, CI, and Changesets provide reproducible review; deferred dependencies require exact-version evidence before use. |
 
 **Security exception boundary**: The active actor is deliberately not authenticated because login is
 explicitly out of scope. It is strictly a seeded, validated local-demo context; externally exposed
 deployment fails closed until real authentication replaces it. Each service independently validates
 input and authorization, while authenticated service credentials are rotated and redacted.
+
+**Dependency exception boundary**: `next@16.2.10` vendors `postcss@8.4.31`, reported as
+GHSA-qx2v-qp2m-jg93. Its scope is build-time CSS processing only; builds MUST use reviewed
+repository sources and never compile untrusted CSS. Owner: Taskify maintainers. Review date:
+2026-08-16. Upgrade to a stable Next.js release that contains PostCSS 8.5.10 or later, then
+re-run `npm audit --omit=dev` and remove this exception.
 
 ## Project Structure
 
