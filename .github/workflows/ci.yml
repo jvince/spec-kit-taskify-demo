@@ -37,4 +37,6 @@ jobs:
       - run: npm run test:contract
       - run: npm run test:integration
       - run: npm run test:e2e
-      - run: npm run changeset:status
+      - name: Validate Changesets release plan
+        if: github.event_name != 'pull_request' || !startsWith(github.head_ref, 'changeset-release/')
+        run: npm run changeset:status
