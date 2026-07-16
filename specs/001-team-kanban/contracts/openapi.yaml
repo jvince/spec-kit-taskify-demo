@@ -1,0 +1,137 @@
+openapi: 3.1.0
+info:
+  title: Taskify REST API
+  version: 1.0.0
+  description: Versioned REST contracts for the seeded Team Kanban workspace.
+servers:
+  - url: /api/v1
+paths:
+  /projects:
+    get:
+      summary: List projects
+      responses:
+        '200': { $ref: '#/components/responses/ProjectList' }
+    post:
+      summary: Create a project
+      parameters: [ { $ref: '#/components/parameters/ActorId' } ]
+      requestBody: { $ref: '#/components/requestBodies/ProjectInput' }
+      responses:
+        '201': { $ref: '#/components/responses/Project' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /projects/{projectId}:
+    get:
+      summary: Get a project and its board summary
+      parameters: [ { $ref: '#/components/parameters/ProjectId' } ]
+      responses:
+        '200': { $ref: '#/components/responses/Project' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /projects/{projectId}/tasks:
+    get:
+      summary: List a project's tasks
+      parameters: [ { $ref: '#/components/parameters/ProjectId' } ]
+      responses:
+        '200': { $ref: '#/components/responses/TaskList' }
+    post:
+      summary: Create and assign a task
+      parameters: [ { $ref: '#/components/parameters/ProjectId' }, { $ref: '#/components/parameters/ActorId' } ]
+      requestBody: { $ref: '#/components/requestBodies/TaskInput' }
+      responses:
+        '201': { $ref: '#/components/responses/Task' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /tasks/{taskId}:
+    patch:
+      summary: Reassign a task or change its status
+      parameters: [ { $ref: '#/components/parameters/TaskId' }, { $ref: '#/components/parameters/ActorId' } ]
+      requestBody: { $ref: '#/components/requestBodies/TaskPatch' }
+      responses:
+        '200': { $ref: '#/components/responses/Task' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /tasks/{taskId}/comments:
+    get:
+      summary: List immutable task comments
+      parameters: [ { $ref: '#/components/parameters/TaskId' } ]
+      responses:
+        '200': { $ref: '#/components/responses/CommentList' }
+    post:
+      summary: Add an immutable task comment
+      parameters: [ { $ref: '#/components/parameters/TaskId' }, { $ref: '#/components/parameters/ActorId' } ]
+      requestBody: { $ref: '#/components/requestBodies/CommentInput' }
+      responses:
+        '201': { $ref: '#/components/responses/Comment' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /notifications:
+    get:
+      summary: List notifications for the active predefined user
+      parameters: [ { $ref: '#/components/parameters/ActorId' } ]
+      responses:
+        '200': { $ref: '#/components/responses/NotificationList' }
+  /notifications/stream:
+    get:
+      summary: Stream notification and board-update events for the active user
+      parameters: [ { $ref: '#/components/parameters/ActorId' } ]
+      responses:
+        '200':
+          description: text/event-stream response with notification.created and task.updated events.
+components:
+  parameters:
+    ActorId:
+      name: X-Actor-Id
+      in: header
+      required: true
+      schema: { type: string, minLength: 1 }
+      description: Validated identifier of a seeded user; this is not authentication in phase one.
+    ProjectId: { name: projectId, in: path, required: true, schema: { type: string } }
+    TaskId: { name: taskId, in: path, required: true, schema: { type: string } }
+  requestBodies:
+    ProjectInput:
+      required: true
+      content: { application/json: { schema: { $ref: '#/components/schemas/ProjectInput' } } }
+    TaskInput:
+      required: true
+      content: { application/json: { schema: { $ref: '#/components/schemas/TaskInput' } } }
+    TaskPatch:
+      required: true
+      content: { application/json: { schema: { $ref: '#/components/schemas/TaskPatch' } } }
+    CommentInput:
+      required: true
+      content: { application/json: { schema: { $ref: '#/components/schemas/CommentInput' } } }
+  responses:
+    Project: { description: Project result, content: { application/json: { schema: { $ref: '#/components/schemas/Project' } } } }
+    ProjectList: { description: Project list, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Project' } } } } }
+    Task: { description: Task result, content: { application/json: { schema: { $ref: '#/components/schemas/Task' } } } }
+    TaskList: { description: Task list, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Task' } } } } }
+    Comment: { description: Comment result, content: { application/json: { schema: { $ref: '#/components/schemas/Comment' } } } }
+    CommentList: { description: Comment list, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Comment' } } } } }
+    NotificationList: { description: Notification list, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Notification' } } } } }
+    ValidationError: { description: Invalid request, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    Forbidden: { description: Actor lacks permission, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    NotFound: { description: Referenced resource does not exist, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    Conflict: { description: Stale task version, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+  schemas:
+    ProjectInput:
+      type: object
+      required: [name]
+      properties: { name: { type: string, minLength: 1, maxLength: 120 } }
+    TaskInput:
+      type: object
+      required: [title, assigneeUserId]
+      properties: { title: { type: string, minLength: 1, maxLength: 200 }, assigneeUserId: { type: string } }
+    TaskPatch:
+      type: object
+      required: [version]
+      properties: { assigneeUserId: { type: string }, status: { type: string, enum: [todo, in_progress, in_review, done] }, version: { type: integer, minimum: 1 } }
+    CommentInput:
+      type: object
+      required: [body]
+      properties: { body: { type: string, minLength: 1, maxLength: 2000 } }
+    Project: { type: object, required: [id, name, createdByUserId, createdAt], properties: { id: { type: string }, name: { type: string }, createdByUserId: { type: string }, createdAt: { type: string, format: date-time } } }
+    Task: { type: object, required: [id, projectId, title, assigneeUserId, status, version], properties: { id: { type: string }, projectId: { type: string }, title: { type: string }, assigneeUserId: { type: string }, status: { type: string, enum: [todo, in_progress, in_review, done] }, version: { type: integer } } }
+    Comment: { type: object, required: [id, taskId, authorUserId, body, createdAt], properties: { id: { type: string }, taskId: { type: string }, authorUserId: { type: string }, body: { type: string }, createdAt: { type: string, format: date-time } } }
+    Notification: { type: object, required: [id, recipientUserId, eventType, taskId, createdAt], properties: { id: { type: string }, recipientUserId: { type: string }, eventType: { type: string, enum: [task_assigned, task_reassigned, task_status_changed, comment_added] }, taskId: { type: string }, createdAt: { type: string, format: date-time } } }
+    Error: { type: object, required: [code, message], properties: { code: { type: string }, message: { type: string } } }

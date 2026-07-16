@@ -42,9 +42,10 @@
 
 Document each applicable constitution principle, the evidence or design decision that satisfies
 it, and any proposed exception. The plan MUST cover: traceability to independently testable user
-stories; automated validation; security and data-integrity needs; incremental delivery; and any
-material complexity or operational-diagnostic decision. A MUST-level exception requires an
-approved constitution amendment before implementation.
+stories; automated validation; input-validation and threat-model decisions; service boundaries,
+data ownership, and versioned contracts; documentation and runbook changes; incremental delivery;
+and any material complexity or operational-diagnostic decision. A MUST-level exception requires
+an approved constitution amendment before implementation.
 
 ## Project Structure
 

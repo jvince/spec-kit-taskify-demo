@@ -106,13 +106,21 @@
 ### Quality, Security, and Delivery Constraints
 
 <!--
-  Record only constraints relevant to this feature. Address external input, authorization,
-  sensitive or persisted data, performance, reliability, accessibility, compatibility, and
-  privacy-safe operational diagnostics. State why an otherwise relevant category is N/A.
+  Record every user-controlled input and trust boundary, its allow-list validation rules, and its
+  authorization requirement. Address service ownership and contracts, sensitive or persisted data,
+  performance, reliability, accessibility, compatibility, and privacy-safe diagnostics. State why
+  an otherwise relevant category is N/A.
 -->
 
 - **QC-001**: [Constraint or N/A rationale]
 - **QC-002**: [Constraint or N/A rationale]
+
+### Service Boundaries and Contracts
+
+- **Service Ownership**: [Service that owns this capability and its data]
+- **Contract Changes**: [Versioned APIs/events affected, or N/A rationale]
+- **Trust Boundaries**: [Authentication, authorization, and input validation requirements]
+- **Operational Documentation**: [API reference, configuration, deployment, and runbook updates]
 
 ## Success Criteria *(mandatory)*
 
