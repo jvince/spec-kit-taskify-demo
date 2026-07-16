@@ -60,7 +60,8 @@ export interface Notification {
 }
 
 /** The finite, privacy-safe categories the v1 API exposes to callers. */
-export type SafeErrorCode = "validation_error" | "forbidden" | "not_found" | "conflict";
+export type SafeErrorCode =
+  "validation_error" | "forbidden" | "not_found" | "conflict" | "service_unavailable";
 
 /** A versioned API error that excludes diagnostic and sensitive implementation details. */
 export interface SafeError {

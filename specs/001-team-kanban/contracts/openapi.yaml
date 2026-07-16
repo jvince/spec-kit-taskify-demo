@@ -79,6 +79,24 @@ paths:
       responses:
         '200':
           description: text/event-stream response with notification.created and task.updated events.
+  /notification-events:
+    post:
+      summary: Ingest a task event from an authenticated Taskify service
+      description: >-
+        Internal v1 service contract. The publishing service owns retries and reuses the same
+        Idempotency-Key until it receives a terminal response. A duplicate key with the same
+        payload returns 202 with duplicate=true. Validation, credential, and key/payload-conflict
+        responses are terminal and must not be retried; 503 is transient and may be retried.
+      parameters:
+        - { $ref: '#/components/parameters/ServiceCredential' }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      requestBody: { $ref: '#/components/requestBodies/NotificationIngestionInput' }
+      responses:
+        '202': { $ref: '#/components/responses/NotificationIngestionAccepted' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
 components:
   parameters:
     ActorId:
@@ -89,6 +107,18 @@ components:
       description: Allow-listed seeded-user identifier. This is a local-demo actor context, not authentication.
     ProjectId: { name: projectId, in: path, required: true, schema: { type: string, pattern: '^prj-[a-z0-9-]{1,60}$' } }
     TaskId: { name: taskId, in: path, required: true, schema: { type: string, pattern: '^tsk-[a-z0-9-]{1,60}$' } }
+    ServiceCredential:
+      name: X-Service-Credential
+      in: header
+      required: true
+      schema: { type: string, minLength: 16, maxLength: 512 }
+      description: Rotatable credential for an allow-listed Taskify service; never accepted from browser clients.
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, pattern: '^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$' }
+      description: Publisher-generated key. Reuse only for retries of the exact same payload.
   requestBodies:
     ProjectInput:
       required: true
@@ -102,6 +132,9 @@ components:
     CommentInput:
       required: true
       content: { application/json: { schema: { $ref: '#/components/schemas/CommentInput' } } }
+    NotificationIngestionInput:
+      required: true
+      content: { application/json: { schema: { $ref: '#/components/schemas/NotificationIngestionInput' } } }
   responses:
     Project: { description: Project result, content: { application/json: { schema: { $ref: '#/components/schemas/Project' } } } }
     ProjectList: { description: Project list, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Project' } } } } }
@@ -114,6 +147,8 @@ components:
     Forbidden: { description: Actor lacks permission, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
     NotFound: { description: Referenced resource does not exist, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
     Conflict: { description: Stale task version, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    ServiceUnavailable: { description: Transient service failure; publisher may retry with the same idempotency key., content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    NotificationIngestionAccepted: { description: Event accepted; duplicate indicates a safely deduplicated retry., content: { application/json: { schema: { $ref: '#/components/schemas/NotificationIngestionAccepted' } } } }
   schemas:
     ProjectInput:
       type: object
@@ -145,11 +180,28 @@ components:
     Task: { type: object, required: [id, projectId, title, assigneeUserId, status, version], properties: { id: { type: string }, projectId: { type: string }, title: { type: string }, assigneeUserId: { type: string }, status: { type: string, enum: [todo, in_progress, in_review, done] }, version: { type: integer } } }
     Comment: { type: object, required: [id, taskId, authorUserId, body, createdAt], properties: { id: { type: string }, taskId: { type: string }, authorUserId: { type: string }, body: { type: string }, createdAt: { type: string, format: date-time } } }
     Notification: { type: object, required: [id, recipientUserId, eventType, taskId, createdAt], properties: { id: { type: string }, recipientUserId: { type: string }, eventType: { type: string, enum: [task_assigned, task_reassigned, task_status_changed, comment_added] }, taskId: { type: string }, createdAt: { type: string, format: date-time } } }
+    NotificationIngestionInput:
+      type: object
+      required: [eventType, actorUserId, assigneeUserId, productManagerUserId, taskId]
+      additionalProperties: false
+      properties:
+        eventType: { type: string, enum: [task_assigned, task_reassigned, task_status_changed, comment_added] }
+        actorUserId: { type: string, pattern: '^[a-z][a-z0-9-]{2,63}$' }
+        assigneeUserId: { type: string, pattern: '^[a-z][a-z0-9-]{2,63}$' }
+        productManagerUserId: { type: string, pattern: '^[a-z][a-z0-9-]{2,63}$' }
+        taskId: { type: string, pattern: '^tsk-[a-z0-9-]{1,60}$' }
+    NotificationIngestionAccepted:
+      type: object
+      additionalProperties: false
+      required: [accepted, duplicate]
+      properties:
+        accepted: { type: boolean, const: true }
+        duplicate: { type: boolean }
     Error:
       type: object
       additionalProperties: false
       required: [code, message, correlationId]
       properties:
-        code: { type: string, enum: [validation_error, forbidden, not_found, conflict] }
+        code: { type: string, enum: [validation_error, forbidden, not_found, conflict, service_unavailable] }
         message: { type: string, description: Safe category message with no internal diagnostics or sensitive values. }
         correlationId: { type: string, pattern: '^req-[a-z0-9-]{8,64}$' }
