@@ -6,17 +6,29 @@
 - Do not create production-facing deployments from this Phase 1 foundation: no authentication
   exists yet, and Phase 2 will explicitly fail closed outside the local seeded-demo environment.
 
-## Local browser shell
+## Local Phase 2 workspace
 
 Install dependencies and start the App Router shell:
 
 ```sh
-npm install
+npm ci
 npm run dev
 ```
 
-Open `http://localhost:3000`. The page is intentionally a shell; services, seeded persistence,
-and API endpoints are implemented in the following phases.
+Set `TASKIFY_DEPLOYMENT_MODE=local-demo` and a 24-character-or-longer
+`TASKIFY_SERVICE_CREDENTIAL` in local secret storage. Configure private service origins with
+`TASKIFY_PROJECT_SERVICE_ORIGIN`, `TASKIFY_TASK_BOARD_SERVICE_ORIGIN`,
+`TASKIFY_COLLABORATION_SERVICE_ORIGIN`, and `TASKIFY_NOTIFICATION_SERVICE_ORIGIN`; browsers never
+receive these credentials or origins. Run each service's exported `start…Server` adapter with its
+own SQLite path to expose the foundational v1 read endpoints.
+
+Project-service seeding is idempotent: call `seedProjectDatabase` after migration to create exactly
+five predefined users and three sample projects. For a local reset, stop the service and delete only
+its explicitly configured SQLite database file, then migrate and seed again. Never use this reset
+procedure in a shared or production-like environment.
+
+All public endpoints are namespaced under `/api/v1`; additive fields are compatible, while breaking
+changes require a new API version and a migration plan.
 
 ## Containerized shell
 
@@ -38,8 +50,7 @@ npm run format:check
 npm run test
 ```
 
-The test commands accept empty suites during Phase 1. Later phases add unit, contract,
-integration, and browser tests to their corresponding directories.
+The test commands cover the Phase 2 foundation; later phases add feature and browser coverage.
 
 ## Dependency management
 
