@@ -21,14 +21,14 @@ testable after the shared foundation is complete.
 
 **Purpose**: Establish the workspace, shared contracts, quality tooling, and developer commands.
 
-- [ ] T001 Create the npm workspace configuration in package.json and apps/, services/, packages/, and tests/ directories.
-- [ ] T002 Configure TypeScript, linting, formatting, and test commands in tsconfig.json, eslint.config.mjs, prettier.config.mjs, and package.json.
-- [ ] T003 [P] Create the Next.js App Router shell in apps/web/app/layout.tsx and apps/web/app/page.tsx.
-- [ ] T004 [P] Create shared contract types, strict one-operation task patches, and safe error types from specs/001-team-kanban/contracts/openapi.yaml in packages/contracts/src/index.ts.
-- [ ] T005 [P] Create shared allow-list validation primitives for IDs, headers, strict payloads, text bounds, and permitted characters in packages/validation/src/index.ts.
-- [ ] T006 [P] Create seeded-user and sample-project fixtures in packages/test-support/src/seed.ts.
-- [ ] T007 Configure local service orchestration and environment documentation in docker-compose.yml and docs/development.md.
-- [ ] T008 Create CI quality gates for lint, type checks, unit tests, contract tests, integration tests, and end-to-end tests in .github/workflows/ci.yml.
+- [X] T001 Create the npm workspace configuration in package.json and apps/, services/, packages/, and tests/ directories.
+- [X] T002 Configure TypeScript, linting, formatting, and test commands in tsconfig.json, eslint.config.mjs, prettier.config.mjs, and package.json.
+- [X] T003 [P] Create the Next.js App Router shell in apps/web/app/layout.tsx and apps/web/app/page.tsx.
+- [X] T004 [P] Create shared contract types, strict one-operation task patches, and safe error types from specs/001-team-kanban/contracts/openapi.yaml in packages/contracts/src/index.ts.
+- [X] T005 [P] Create shared allow-list validation primitives for IDs, headers, strict payloads, text bounds, and permitted characters in packages/validation/src/index.ts.
+- [X] T006 [P] Create seeded-user and sample-project fixtures in packages/test-support/src/seed.ts.
+- [X] T007 Configure local service orchestration and environment documentation in docker-compose.yml and docs/development.md.
+- [X] T008 Create CI quality gates for lint, type checks, unit tests, contract tests, integration tests, and end-to-end tests in .github/workflows/ci.yml.
 
 ---
 

@@ -1,0 +1,6 @@
+{
+  "name": "@taskify/test-support",
+  "version": "0.1.0",
+  "private": true,
+  "types": "./src/seed.ts"
+}

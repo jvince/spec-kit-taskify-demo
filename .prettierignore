@@ -1,0 +1,10 @@
+node_modules/
+.agents/
+.specify/
+specs/
+**/.next/
+dist/
+build/
+coverage/
+test-results/
+package-lock.json

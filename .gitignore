@@ -1,0 +1,23 @@
+# Node.js build and dependency outputs
+node_modules/
+dist/
+build/
+.next/
+coverage/
+test-results/
+tsconfig.tsbuildinfo
+
+# Local runtime state and secrets
+.env*
+!.env.example
+*.log
+*.sqlite
+*.sqlite-*
+
+# Editor and operating-system files
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/

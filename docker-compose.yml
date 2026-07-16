@@ -1,0 +1,15 @@
+services:
+  web:
+    image: node:24-bookworm
+    working_dir: /workspace
+    command: sh -c "npm install && npm run dev -- --hostname 0.0.0.0"
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/workspace
+      - taskify-node-modules:/workspace/node_modules
+    environment:
+      NODE_ENV: development
+
+volumes:
+  taskify-node-modules:
