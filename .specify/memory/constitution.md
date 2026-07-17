@@ -1,16 +1,18 @@
 <!--
 Sync Impact Report
-- Version change: 1.2.0 -> 1.3.0
-- Modified principles: VI Incremental, Reviewable Delivery (expanded with mandatory pull-request
-  review and protected-main requirements)
+- Version change: 1.3.0 -> 2.0.0
+- Modified principles: VI Incremental, Reviewable Delivery (maintains pull-request, protected-main,
+  CI, traceability, and changeset requirements; removes mandatory maintainer approval)
 - Added sections: none
 - Removed sections: none
 - Templates requiring updates:
   - updated: .specify/templates/plan-template.md
   - updated: .specify/templates/tasks-template.md
   - reviewed: .specify/templates/spec-template.md (no update required)
-- Follow-up TODOs: Configure matching GitHub branch protection for `main`, including required CI
-  status checks and one approving review.
+- Runtime guidance updated: docs/development.md
+- Active feature artifacts updated: specs/001-team-kanban/plan.md,
+  specs/001-team-kanban/tasks.md
+- Follow-up TODOs: none
 -->
 # Taskify Constitution
 
@@ -55,17 +57,20 @@ understood or operated is incomplete.
 
 ### VI. Incremental, Reviewable Delivery
 Work MUST be organized into small, independently usable user-story increments, ordered by
-priority. Each increment MUST be demonstrable without relying on later stories, and code review
-MUST verify its requirements, tests, and constitution compliance. Rationale: small increments
-expose misunderstanding early and keep the project releasable.
+priority. Each increment MUST be demonstrable without relying on later stories, and its
+pull-request evidence and required CI gates MUST verify requirements, tests, and constitution
+compliance. Human review MAY supplement this evidence but is not mandatory. Rationale: small
+increments expose misunderstanding early and keep the project releasable.
 
 All changes to code, configuration, service contracts, or deployment artifacts MUST be proposed
 from a topic branch through a pull request; direct pushes to `main` are prohibited except for a
 documented emergency remediation. A pull request MUST link applicable specification and planning
 artifacts, include a changeset when release-relevant, pass all required CI quality gates, and
-receive at least one maintainer approval before merge. `main` MUST be protected to enforce these
-requirements. Rationale: an auditable review path prevents unreviewed regressions and makes
-delivery evidence durable.
+record the evidence required by the repository's pull-request workflow. Maintainer approval MAY be
+requested but is not required by this constitution. `main` MUST be protected to require pull
+requests and the configured CI quality gates. Rationale: an auditable review path and automated
+quality gates prevent untracked regressions and make delivery evidence durable without imposing a
+mandatory human-approval gate.
 
 ### VII. Simplicity and Operational Clarity
 The simplest design that satisfies approved requirements MUST be preferred. New dependencies,
@@ -98,9 +103,10 @@ dependency-ordered tasks, implement, and assess convergence. The plan's Constitu
 record how each principle is met or explicitly justify any exception before implementation.
 Tasks MUST include validation, service-contract, and documentation work required by the relevant
 principles. Pull requests MUST use the approved branch workflow and identify the required CI
-evidence, review, and changeset status before merge. Reviewers MUST reject work that lacks
-traceability to an approved requirement, adequate evidence of validation, current operational
-documentation, compliant dependency versioning, or the required pull-request evidence.
+evidence and changeset status before merge. Any reviewer participating in a pull request MUST
+reject work that lacks traceability to an approved requirement, adequate evidence of validation,
+current operational documentation, compliant dependency versioning, or the required pull-request
+evidence; reviewer participation itself is not mandatory.
 
 ## Governance
 
@@ -113,4 +119,4 @@ MINOR for new or materially expanded principles or sections, and PATCH for clari
 not alter obligations. Every plan and review MUST assess compliance; unresolved MUST-level
 violations block delivery unless this constitution is amended first.
 
-**Version**: 1.3.0 | **Ratified**: 2026-07-16 | **Last Amended**: 2026-07-16
+**Version**: 2.0.0 | **Ratified**: 2026-07-16 | **Last Amended**: 2026-07-17

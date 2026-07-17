@@ -28,7 +28,7 @@ testable after the shared foundation is complete.
 - [X] T005 [P] Create shared allow-list validation primitives for IDs, headers, strict payloads, text bounds, and permitted characters in packages/validation/src/index.ts.
 - [X] T006 [P] Create seeded-user and sample-project fixtures in packages/test-support/src/seed.ts.
 - [X] T007 Configure local service orchestration and environment documentation in docker-compose.yml and docs/development.md.
-- [X] T008 Create CI clean-install, Changesets, lint, type-check, unit-test, contract-test, integration-test, and end-to-end-test gates in .github/workflows/ci.yml.
+- [X] T008 Complete the blocking repository-governance gate: retain CI clean-install, Changesets, lint, type-check, unit-test, contract-test, integration-test, and end-to-end-test gates in .github/workflows/ci.yml; add the required specification/plan links, CI evidence, and release-relevant changeset status to .github/pull_request_template.md; apply protected-main repository settings requiring pull requests and all configured CI status checks, with no mandatory maintainer approval, from .github/branch-protection/main.json; and record applied-settings verification in docs/development.md. No remaining implementation task may begin until the repository settings are active and verified.
 
 ---
 
@@ -79,7 +79,7 @@ notification.
 - [X] T026 [US1] Implement task creation, assignment/reassignment authorization, version updates, and persistence in services/task-board-service/src/tasks.ts.
 - [X] T027 [US1] Implement the task-board notification client in services/task-board-service/src/notification-client.ts and notification-service handler in services/notification-service/src/http.ts; publish assignment and reassignment events through the approved v1 notification-ingestion contract with retry-safe failure handling, update the affected service runbooks, and do not import notification-service source modules.
 - [X] T028 [US1] Implement project and task REST handlers in apps/web/app/api/v1/projects/route.ts, apps/web/app/api/v1/projects/[projectId]/route.ts, apps/web/app/api/v1/projects/[projectId]/tasks/route.ts, and apps/web/app/api/v1/tasks/[taskId]/route.ts; update the v1 project/task contract and project-service and task-board-service runbooks with the same change.
-- [X] T029 [US1] Deliver the Phase 3 UI as three reviewable internal changes: (a) local-demo active-actor selection and state in apps/web/components/active-user-selector.tsx and apps/web/lib/active-actor.ts; (b) product-manager project/task creation, assignment, reassignment, and validation feedback in apps/web/app/projects/page.tsx and apps/web/components/project-task-form.tsx; and (c) recipient notification listing and actor-switching behavior in apps/web/components/notification-list.tsx.
+- [X] T029 [US1] Deliver the Phase 3 UI as three reviewable changes through the required pull-request workflow: (a) local-demo active-actor selection and state in apps/web/components/active-user-selector.tsx and apps/web/lib/active-actor.ts; (b) product-manager project/task creation, assignment, reassignment, and validation feedback in apps/web/app/projects/page.tsx and apps/web/components/project-task-form.tsx; and (c) recipient notification listing and actor-switching behavior in apps/web/components/notification-list.tsx.
 
 **Checkpoint**: The product manager can create and assign work, with documented REST behavior and
 automated validation.
@@ -98,15 +98,15 @@ engineer is forbidden.
 ### Tests for User Story 2
 
 - [ ] T030 [P] [US2] Add task status PATCH contract tests for permitted statuses, stale versions, and rejection of both or neither mutable field in tests/contract/task-status.contract.test.ts.
-- [ ] T031 [P] [US2] Add task-move authorization and notification integration tests in tests/integration/task-status-authorization.test.ts.
-- [ ] T032 [P] [US2] Add drag-and-drop and real-time multi-client browser coverage in tests/e2e/kanban-realtime.spec.ts.
+- [ ] T031 [P] [US2] Add task-move authorization, notification, and relationship-preservation integration tests proving that accepted and rejected status moves do not change task project or assignee in tests/integration/task-status-authorization.test.ts.
+- [ ] T032 [P] [US2] Add drag-and-drop, real-time multi-client, and empty-board browser coverage, including four visible empty columns and preservation of project and assignee after moves, in tests/e2e/kanban-realtime.spec.ts.
 
 ### Implementation for User Story 2
 
 - [ ] T033 [US2] Implement validated task status mutations, role checks, and optimistic-version conflict handling in services/task-board-service/src/tasks.ts.
 - [ ] T034 [US2] Publish task status notifications and board-update events through the authenticated v1 notification-ingestion contract in services/task-board-service/src/notification-client.ts with retry-safe failure handling; do not import notification-service source modules.
 - [ ] T035 [US2] Implement the project board query and status mutation REST handlers in apps/web/app/api/v1/projects/[projectId]/route.ts and apps/web/app/api/v1/tasks/[taskId]/route.ts; update the board mutation, SSE, and accessibility documentation with the same change.
-- [ ] T036 [US2] Implement the four-column accessible drag-and-drop board in apps/web/app/projects/[projectId]/page.tsx and apps/web/components/kanban-board.tsx.
+- [ ] T036 [US2] Implement the four-column accessible drag-and-drop board, including an empty-board state that keeps all four columns visible, in apps/web/app/projects/[projectId]/page.tsx and apps/web/components/kanban-board.tsx.
 - [ ] T037 [US2] Implement the authenticated event-stream client and board refresh behavior in apps/web/lib/notification-stream.ts and apps/web/components/kanban-board.tsx.
 
 **Checkpoint**: The board provides role-aware drag-and-drop status changes and real-time updates.
@@ -125,13 +125,13 @@ confirm attempted edit/delete actions preserve the original comment.
 
 - [ ] T038 [P] [US3] Add comment REST contract tests, including immutable-operation responses, in tests/contract/comments.contract.test.ts.
 - [ ] T039 [P] [US3] Add comment validation, author attribution, and notification-recipient integration tests for the assignee and product manager when either is not the author in tests/integration/comments.test.ts.
-- [ ] T040 [P] [US3] Add multi-user task-comment browser coverage in tests/e2e/task-comments.spec.ts.
+- [ ] T040 [P] [US3] Add multi-user task-detail browser coverage proving comments and authors are visible, comments are immutable, and an empty comment list states that no comments are available in tests/e2e/task-comments.spec.ts.
 
 ### Implementation for User Story 3
 
 - [ ] T041 [US3] Implement append-only comment validation, persistence, and task-reference checks in services/collaboration-service/src/comments.ts.
 - [ ] T042 [US3] Implement the collaboration notification client in services/collaboration-service/src/notification-client.ts and publish comment notifications for the task assignee and product manager whenever either is not the author, excluding the actor, through the authenticated v1 notification-ingestion contract with retry-safe failure handling; do not import notification-service source modules.
-- [ ] T043 [US3] Implement comment list/create REST handlers and task-card comment UI in apps/web/app/api/v1/tasks/[taskId]/comments/route.ts and apps/web/components/task-comments.tsx; update the collaboration API contract and service runbook with the same change.
+- [ ] T043 [US3] Implement comment list/create REST handlers and a task-detail UI that shows immutable comments with their authors and an explicit empty-comment state in apps/web/app/api/v1/tasks/[taskId]/comments/route.ts and apps/web/components/task-comments.tsx; update the collaboration API contract and service runbook with the same change.
 
 **Checkpoint**: Comments are attributed, immutable, validated, and visible to all predefined users.
 
@@ -163,13 +163,11 @@ product manager, four engineers, and three sample projects are available.
 **Purpose**: Complete notification visibility, operational documentation, accessibility, security,
 and release validation across all user stories.
 
-- [ ] T048 [P] Enhance the in-app recipient notification list with live refresh and reconnection behavior in apps/web/components/notification-list.tsx and apps/web/app/layout.tsx.
-- [ ] T049 Add accessibility requirements verification and keyboard drag-and-drop coverage in tests/e2e/kanban-accessibility.spec.ts and docs/accessibility.md.
-- [ ] T050 Add performance, concurrency, input-validation, and no-sensitive-diagnostics coverage in tests/integration/performance-boundary.test.ts, tests/integration/input-validation.test.ts, and tests/integration/diagnostics.test.ts.
+- [ ] T048 Enhance the in-app recipient notification list with live refresh, reconnection behavior, and an explicit empty-notification state in apps/web/components/notification-list.tsx and apps/web/app/layout.tsx.
+- [ ] T049 [P] Add accessibility verification for keyboard drag-and-drop, every board operation and form control, visible focus, and announced status results in tests/e2e/kanban-accessibility.spec.ts and docs/accessibility.md.
+- [ ] T050 [P] Add performance, concurrency, input-validation, relationship-preservation, and no-sensitive-diagnostics coverage in tests/integration/performance-boundary.test.ts, tests/integration/input-validation.test.ts, and tests/integration/diagnostics.test.ts.
 - [ ] T051 Reconcile API, service, deployment, and operational documentation for the completed release in docs/api.md, docs/deployment.md, docs/runbook.md, and README.md.
 - [ ] T052 Run the end-to-end quickstart validation and record results, including the SC-001, SC-002, SC-005, and SC-006 timing thresholds, in specs/001-team-kanban/quickstart.md.
-- [ ] T053 Configure and document protected-main enforcement requiring pull requests, all required CI status checks, and at least one maintainer approval in .github/branch-protection/main.json and docs/development.md.
-- [ ] T054 Add the pull-request evidence workflow requiring links to specs/001-team-kanban/spec.md and specs/001-team-kanban/plan.md, required CI results, maintainer approval, and release-relevant changeset status in .github/pull_request_template.md and docs/development.md.
 
 ---
 
@@ -206,7 +204,8 @@ US1 + US2 + US3 + US4 ──> Polish and release validation
 - Within each user story, all tasks marked `[P]` are parallelizable test tasks.
 - US3 and US4 may proceed in parallel with US2 after the foundation, subject to seeded-task
   availability for US3.
-- T047–T050 can run in parallel after their dependent services and UI exist.
+- T049 and T050 can run in parallel after the completed board behavior is available; T048 follows
+  the notification-list and stream implementation, and T047 remains part of US4.
 
 ## Implementation Strategy
 
@@ -223,9 +222,10 @@ US1 + US2 + US3 + US4 ──> Polish and release validation
 2. Deliver US2 to make work state visible and real-time.
 3. Deliver US3 for immutable task discussion.
 4. Deliver US4 to guarantee a repeatable seeded demonstration.
-5. Complete notification UI, cross-cutting quality work, and pull-request governance evidence before release.
+5. Complete notification UI and cross-cutting quality work before release; repository governance
+   is already enforced by the blocking T008 setup gate.
 
 ### Format Validation
 
-All 54 tasks use a checkbox, sequential task ID, optional parallel marker, required user-story
+All 52 tasks use a checkbox, sequential task ID, optional parallel marker, required user-story
 label when applicable, and exact file paths.
