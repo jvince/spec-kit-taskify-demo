@@ -32,7 +32,9 @@ scripts and independently deployable services
 **Project Type**: Web application with microservices and versioned REST interfaces
 
 **Performance Goals**: Load the initial three-project workspace and show task locations within two
-seconds; propagate accepted board updates to connected local clients within two seconds
+seconds; propagate accepted board updates to connected project views within two seconds; and show
+an accepted notification in each connected intended recipient's notification list within two
+seconds
 
 **Constraints**: No login or credentials; every external input is allow-list validated; role checks
 use a validated seeded active actor; service calls are authenticated; SQLite writes are short,

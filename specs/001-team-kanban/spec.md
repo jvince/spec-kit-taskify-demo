@@ -218,8 +218,10 @@ product manager and four engineers, and that exactly three sample projects are a
   produce a safe, clear outcome without partial data changes.
 - **QC-004**: The primary project-board view MUST show a project and its task locations within two
   seconds for the initial workspace of three projects and five users.
-- **QC-005**: Every board operation and form control MUST be keyboard operable, show visible
-  keyboard focus, and provide an announced text alternative for a task status change.
+- **QC-005**: Project and task creation, assignment, reassignment, actor selection, board
+  navigation, task opening, comment submission, notification access, and task-status movement MUST
+  be keyboard operable and show visible keyboard focus. A keyboard status change MUST announce the
+  task title, destination column, and success or safe failure result.
 - **QC-006**: For an accepted task mutation, a project board already connected to its update
   stream MUST reflect the accepted state within two seconds. A disconnected board MUST refresh
   the project before it permits another mutation after reconnection. A connected notification list
@@ -261,10 +263,13 @@ product manager and four engineers, and that exactly three sample projects are a
   in To Do in under two minutes.
 - **SC-002**: An engineer can locate an assigned task and move it through all four workflow
   columns in under one minute.
-- **SC-003**: In acceptance testing, 100% of invalid project, task, assignment, column, and
-  comment submissions are rejected without creating or changing data.
-- **SC-004**: In acceptance testing, 100% of displayed tasks appear in exactly one permitted
-  column and retain their project and assignee after a column move.
+- **SC-003**: Acceptance tests MUST cover every documented invalid-input equivalence class and
+  boundary in the Input Validation Rules, including missing, empty, oversized, malformed,
+  unsupported, unauthorized, stale-version, and invalid-relationship cases. Every tested
+  submission MUST be rejected without creating or changing data.
+- **SC-004**: Acceptance tests MUST verify every permitted Kanban column and both authorized mover
+  roles. After every accepted move, the task MUST appear in exactly one permitted column and retain
+  its original project and assignee.
 - **SC-005**: A reviewer can verify the five predefined users and three sample projects from a
   newly initialized workspace in under one minute.
 - **SC-006**: A user can add a valid comment and see its author on the task in under 30 seconds.
