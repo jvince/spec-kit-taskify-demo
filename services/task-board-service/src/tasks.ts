@@ -25,6 +25,15 @@ export function listTasks(db: Database.Database, projectId: string): Task[] {
     .all(projectId) as Task[];
 }
 
+/** Returns one task for authenticated service-to-service relationship validation. */
+export function getTask(db: Database.Database, taskId: string): Task | undefined {
+  return db
+    .prepare(
+      "SELECT id, project_id AS projectId, title, assignee_user_id AS assigneeUserId, status, version FROM tasks WHERE id = ?"
+    )
+    .get(taskId) as Task | undefined;
+}
+
 /** Creates a To Do task for an allow-listed engineer under product-manager authority. */
 export function createTask(
   db: Database.Database,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { TASK_STATUSES, type Task, type TaskStatus } from "@taskify/contracts/src";
 import {
   ACTIVE_ACTOR_CHANGED,
@@ -107,6 +108,7 @@ export function KanbanBoard({ projectId }: { projectId: string }) {
                     aria-label={`${task.title}, ${LABELS[task.status]}`}
                   >
                     <strong>{task.title}</strong>
+                    <Link href={`/tasks/${encodeURIComponent(task.id)}`}>Open task discussion</Link>
                     <span>Assignee: {userName(task.assigneeUserId)}</span>
                     <label>
                       Status
