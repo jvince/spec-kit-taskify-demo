@@ -42,5 +42,5 @@ jobs:
       - run: npx playwright install --with-deps chromium --only-shell
       - run: npm run test:e2e
       - name: Validate Changesets release plan
-        if: github.event_name != 'pull_request' || !startsWith(github.head_ref, 'changeset-release/')
+        if: github.event_name == 'pull_request' && !startsWith(github.head_ref, 'changeset-release/')
         run: npm run changeset:status
