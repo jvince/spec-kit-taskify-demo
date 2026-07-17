@@ -47,8 +47,26 @@ Node modules in its named Docker volume. Do not place secrets in the repository 
 Create a topic branch for every code, configuration, contract, or deployment change and open a
 pull request to `main`; direct pushes are reserved for documented emergency remediations. Link
 the relevant Spec Kit artifacts and include a changeset for release-relevant work. Before merge,
-the pull request requires all CI checks to pass and one maintainer approval. Configure GitHub
-branch protection on `main` to enforce those requirements.
+the pull request requires all configured CI checks to pass. Maintainer approval may be requested
+but is not required. Configure GitHub branch protection on `main` to require pull requests and the
+configured CI checks.
+
+### Applied `main` protection evidence
+
+The settings in `.github/branch-protection/main.json` document the repository protection verified
+on 2026-07-17 with:
+
+```sh
+gh api repos/jvince/spec-kit-taskify-demo/branches/main/protection
+```
+
+The verified settings require pull requests, strict completion of the `verify` status check,
+administrator enforcement, and conversation resolution. Force pushes and branch deletion are
+disabled. The required approving-review count is zero, as permitted by constitution 2.0.0.
+
+Re-run the command after any repository-rules change and reconcile the committed JSON and this
+evidence before merging further implementation work. The committed JSON documents the intended
+settings; GitHub repository settings remain the enforcement source of truth.
 
 Run each required gate before opening or updating the pull request:
 
