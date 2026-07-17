@@ -1,7 +1,6 @@
 "use client";
 
 import { ActiveUserSelector } from "../../components/active-user-selector";
-import { NotificationList } from "../../components/notification-list";
 import { ProjectTaskForm } from "../../components/project-task-form";
 
 /** Renders the local-demo project and task-management workspace. */
@@ -19,7 +18,6 @@ export default function ProjectsPage() {
         This selector changes the local demo actor only; it is not a login or authorization system.
       </p>
       <ProjectTaskForm />
-      <NotificationList />
     </section>
   );
 }

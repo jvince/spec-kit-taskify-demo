@@ -2,13 +2,13 @@
 
 ## Prerequisites
 
-- Node.js current LTS release and npm.
+- Node.js 24.16.0 and npm 11.13.0.
 - A local workspace with the seeded SQLite databases initialized.
 - The web application and all four services running locally.
 
 ## Start the workspace
 
-1. Install project dependencies with `npm install`.
+1. Install project dependencies reproducibly with `npm ci`.
 2. Initialize the seeded roster, projects, and service-owned SQLite databases with the documented
    project seed command.
 3. Start the development workspace with `npm run dev`.
@@ -62,3 +62,30 @@
 - Dragging a task through all four columns completes in under one minute.
 - Invalid and unauthorized inputs never partially change data.
 - Connected board clients receive a real-time update after accepted task mutations.
+
+## Recorded release validation
+
+Validated on 2026-07-18 from branch `001-team-kanban-phase-7` with Playwright against the local
+Next.js development server and mocked service boundaries. The complete seven-scenario browser
+suite passed in 5.1 seconds (5.683 seconds including runner startup). Boundary integration tests
+also covered optimistic concurrency, invalid inputs, relationship preservation, two-second initial
+workspace performance, and privacy-safe diagnostics.
+
+| Criterion | Automated scenario | Measured browser time | Threshold | Result |
+|---|---|---:|---:|---|
+| SC-001 | Product-manager project creation, task creation, assignment, and To Do confirmation | 1.1 s | 120 s | PASS |
+| SC-002 | Assignee moves a task through To Do, In Progress, In Review, and Done with a second live client | 2.7 s | 60 s | PASS |
+| SC-005 | Reviewer verifies five seeded users and three sample projects | 1.1 s | 60 s | PASS |
+| SC-006 | User adds a comment and sees its author | 1.3 s | 30 s | PASS |
+
+Commands used:
+
+```sh
+npm run test:integration
+npm run test:e2e
+npm run test:e2e -- --grep "four-column board"
+```
+
+The release validation also confirmed the explicit empty states, global recipient notification
+refresh, reconnect status, keyboard status control, visible focus, announced move results, safe
+error envelopes, and rejection of stale or unauthorized mutations without partial state changes.

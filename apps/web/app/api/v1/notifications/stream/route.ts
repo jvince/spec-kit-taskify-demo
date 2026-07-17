@@ -4,5 +4,8 @@ export function GET(request: Request) {
   const url = new URL(request.url);
   const headers = new Headers(request.headers);
   headers.set("X-Actor-Id", url.searchParams.get("actorId") ?? "");
-  return proxyServiceRequest(new Request(request, { headers }), ["notifications", "stream"]);
+  return proxyServiceRequest(new Request(request.url, { method: "GET", headers }), [
+    "notifications",
+    "stream"
+  ]);
 }

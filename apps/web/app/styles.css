@@ -170,6 +170,16 @@ select {
   color: #56627a;
 }
 
+.notification-drawer {
+  max-width: 72rem;
+  margin: 0 auto 3rem;
+  padding: 0 1.25rem;
+}
+
+.global-notifications {
+  box-shadow: 0 0.35rem 1rem rgb(23 32 51 / 8%);
+}
+
 .text-button {
   padding: 0.25rem 0;
   background: transparent;

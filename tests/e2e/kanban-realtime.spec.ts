@@ -44,10 +44,17 @@ test("four-column board moves work and refreshes a second client", async ({ brow
   await second.goto("/projects/prj-board");
   for (const heading of ["To Do", "In Progress", "In Review", "Done"])
     await expect(first.getByRole("heading", { name: heading })).toBeVisible();
-  await first
-    .getByRole("article", { name: "Ship board, To Do" })
-    .dragTo(first.getByRole("region", { name: "In Progress" }));
-  await expect(second.getByLabel("Status")).toHaveValue("in_progress");
+  for (const destination of [
+    { label: "In Progress", value: "in_progress" },
+    { label: "In Review", value: "in_review" },
+    { label: "Done", value: "done" }
+  ]) {
+    await first
+      .getByRole("article", { name: /^Ship board,/ })
+      .dragTo(first.getByRole("region", { name: destination.label }));
+    await expect(first.getByLabel("Status")).toHaveValue(destination.value);
+    await expect(second.getByLabel("Status")).toHaveValue(destination.value);
+  }
   await expect(second.getByText("Assignee: Blake Engineer")).toBeVisible();
   expect(tasks[0].projectId).toBe("prj-board");
   expect(tasks[0].assigneeUserId).toBe("usr-blake-eng");
