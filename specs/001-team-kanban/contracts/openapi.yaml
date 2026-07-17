@@ -41,6 +41,12 @@ paths:
         '400': { $ref: '#/components/responses/ValidationError' }
         '403': { $ref: '#/components/responses/Forbidden' }
   /tasks/{taskId}:
+    get:
+      summary: Resolve a task for authenticated service relationship checks
+      parameters: [ { $ref: '#/components/parameters/TaskId' }, { $ref: '#/components/parameters/ActorId' } ]
+      responses:
+        '200': { $ref: '#/components/responses/Task' }
+        '404': { $ref: '#/components/responses/NotFound' }
     patch:
       summary: Reassign a task or change its status
       parameters: [ { $ref: '#/components/parameters/TaskId' }, { $ref: '#/components/parameters/ActorId' } ]
@@ -66,6 +72,14 @@ paths:
         '400': { $ref: '#/components/responses/ValidationError' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      summary: Unsupported because comments are immutable
+      responses:
+        '405': { $ref: '#/components/responses/ImmutableOperation' }
+    delete:
+      summary: Unsupported because comments are immutable
+      responses:
+        '405': { $ref: '#/components/responses/ImmutableOperation' }
   /notifications:
     get:
       summary: List notifications for the active predefined user
@@ -151,6 +165,7 @@ components:
     Conflict: { description: Stale task version, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
     ServiceUnavailable: { description: Transient service failure; publisher may retry with the same idempotency key., content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
     NotificationIngestionAccepted: { description: Event accepted; duplicate indicates a safely deduplicated retry., content: { application/json: { schema: { $ref: '#/components/schemas/NotificationIngestionAccepted' } } } }
+    ImmutableOperation: { description: Comments are append-only; the response includes Allow with GET and POST. }
   schemas:
     ProjectInput:
       type: object

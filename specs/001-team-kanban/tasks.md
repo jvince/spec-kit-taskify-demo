@@ -123,15 +123,15 @@ confirm attempted edit/delete actions preserve the original comment.
 
 ### Tests for User Story 3
 
-- [ ] T038 [P] [US3] Add comment REST contract tests, including immutable-operation responses, in tests/contract/comments.contract.test.ts.
-- [ ] T039 [P] [US3] Add comment validation, author attribution, and notification-recipient integration tests for the assignee and product manager when either is not the author in tests/integration/comments.test.ts.
-- [ ] T040 [P] [US3] Add multi-user task-detail browser coverage proving comments and authors are visible, comments are immutable, and an empty comment list states that no comments are available in tests/e2e/task-comments.spec.ts.
+- [X] T038 [P] [US3] Add comment REST contract tests, including immutable-operation responses, in tests/contract/comments.contract.test.ts.
+- [X] T039 [P] [US3] Add comment validation, author attribution, and notification-recipient integration tests for the assignee and product manager when either is not the author in tests/integration/comments.test.ts.
+- [X] T040 [P] [US3] Add multi-user task-detail browser coverage proving comments and authors are visible, comments are immutable, and an empty comment list states that no comments are available in tests/e2e/task-comments.spec.ts.
 
 ### Implementation for User Story 3
 
-- [ ] T041 [US3] Implement append-only comment validation, persistence, and task-reference checks in services/collaboration-service/src/comments.ts.
-- [ ] T042 [US3] Implement the collaboration notification client in services/collaboration-service/src/notification-client.ts and publish comment notifications for the task assignee and product manager whenever either is not the author, excluding the actor, through the authenticated v1 notification-ingestion contract with retry-safe failure handling; do not import notification-service source modules.
-- [ ] T043 [US3] Implement comment list/create REST handlers and a task-detail UI that shows immutable comments with their authors and an explicit empty-comment state in apps/web/app/api/v1/tasks/[taskId]/comments/route.ts and apps/web/components/task-comments.tsx; update the collaboration API contract and service runbook with the same change.
+- [X] T041 [US3] Implement append-only comment validation, persistence, and task-reference checks in services/collaboration-service/src/comments.ts.
+- [X] T042 [US3] Implement the collaboration notification client in services/collaboration-service/src/notification-client.ts and publish comment notifications for the task assignee and product manager whenever either is not the author, excluding the actor, through the authenticated v1 notification-ingestion contract with retry-safe failure handling; do not import notification-service source modules.
+- [X] T043 [US3] Implement comment list/create REST handlers and a task-detail UI that shows immutable comments with their authors and an explicit empty-comment state in apps/web/app/api/v1/tasks/[taskId]/comments/route.ts and apps/web/components/task-comments.tsx; update the collaboration API contract and service runbook with the same change.
 
 **Checkpoint**: Comments are attributed, immutable, validated, and visible to all predefined users.
 

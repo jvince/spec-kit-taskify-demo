@@ -1,6 +1,6 @@
 import type Database from "better-sqlite3";
 import { hasServiceCredential } from "../../../packages/contracts/src/service-auth";
-import { createTask, listTasks, patchTask } from "./tasks";
+import { createTask, getTask, listTasks, patchTask } from "./tasks";
 import { publishTaskNotification } from "./notification-client";
 
 /** Attempts post-commit delivery without rolling back the task service's committed state. */
@@ -98,6 +98,10 @@ export async function handleTaskBoardRequest(
     });
   }
   const taskMatch = /^\/v1\/tasks\/(tsk-[a-z0-9-]{1,60})$/.exec(url.pathname);
+  if (taskMatch && request.method === "GET") {
+    const task = getTask(db, taskMatch[1]);
+    return task ? Response.json(task) : new Response(null, { status: 404 });
+  }
   if (taskMatch && request.method === "PATCH") {
     let payload: unknown;
     try {
