@@ -34,3 +34,10 @@ export function setActiveActor(actorId: string): ActiveActor {
   window.dispatchEvent(new Event(ACTIVE_ACTOR_CHANGED));
   return actor;
 }
+
+/** Clears local-demo selection state and restores the fixed product-manager default. */
+export function resetActiveActor(): ActiveActor {
+  window.localStorage.removeItem(STORAGE_KEY);
+  window.dispatchEvent(new Event(ACTIVE_ACTOR_CHANGED));
+  return LOCAL_DEMO_USERS[0];
+}
