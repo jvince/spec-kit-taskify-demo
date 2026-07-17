@@ -25,6 +25,27 @@ async function publishAssignment(
   }
 }
 
+/** Publishes a post-commit status event without coupling task persistence to delivery. */
+async function publishStatusChange(
+  actorId: string,
+  task: { id: string; assigneeUserId: string }
+): Promise<void> {
+  const origin = process.env.TASKIFY_NOTIFICATION_SERVICE_ORIGIN;
+  const credential = process.env.TASKIFY_SERVICE_CREDENTIAL;
+  if (!origin || !credential) return;
+  try {
+    await publishTaskNotification(origin, credential, {
+      eventType: "task_status_changed",
+      actorUserId: actorId,
+      assigneeUserId: task.assigneeUserId,
+      productManagerUserId: "usr-ada-pm",
+      taskId: task.id
+    });
+  } catch {
+    // State is committed independently; the stable idempotency contract makes retry safe.
+  }
+}
+
 /** Checks project existence through its owning service rather than accessing its SQLite data. */
 async function projectExists(projectId: string): Promise<boolean> {
   const origin = process.env.TASKIFY_PROJECT_SERVICE_ORIGIN;
@@ -89,6 +110,7 @@ export async function handleTaskBoardRequest(
       const isReassignment =
         typeof payload === "object" && payload !== null && "assigneeUserId" in payload;
       if (isReassignment) await publishAssignment(actorId, result.task, "task_reassigned");
+      else await publishStatusChange(actorId, result.task);
       return Response.json(result.task);
     }
     return new Response(null, {

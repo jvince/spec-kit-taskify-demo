@@ -29,3 +29,17 @@ export function publishNotification(notification: Notification, eventId: number)
     }
   }
 }
+
+/** Broadcasts a privacy-safe task invalidation to connected boards for refresh. */
+export function publishBoardUpdate(taskId: string): void {
+  const payload = encoder.encode(sseEvent("task.updated", { taskId }));
+  for (const recipientSubscribers of subscribers.values()) {
+    for (const controller of recipientSubscribers) {
+      try {
+        controller.enqueue(payload);
+      } catch {
+        recipientSubscribers.delete(controller);
+      }
+    }
+  }
+}
