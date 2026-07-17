@@ -33,3 +33,5 @@
 
 - Validation completed on 2026-07-16. The predefined-user selector is documented as an
   assumption to satisfy the no-login first-phase scope.
+- Revalidated on 2026-07-17 after approving the specification baseline, promoting explicit input
+  limits into the specification, and consolidating the immutable-comment requirement.

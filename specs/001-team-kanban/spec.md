@@ -4,7 +4,7 @@
 
 **Created**: 2026-07-16
 
-**Status**: Draft
+**Status**: Approved for implementation
 
 **Input**: User description: "Develop Taskify, a team productivity platform where predefined
 users create projects, assign tasks, comment, and move tasks across Kanban columns (To Do, In
@@ -170,8 +170,8 @@ product manager and four engineers, and that exactly three sample projects are a
   user management in this phase.
 - **FR-013**: The system MUST reject an assignment or reassignment attempted by an engineer
   without changing the task.
-- **FR-014**: The system MUST allow all predefined users to add comments but MUST NOT allow a
-  comment to be edited or deleted in this phase.
+- **FR-014**: The system MUST preserve every accepted comment as immutable; no predefined user
+  may edit or delete it in this phase.
 - **FR-015**: The system MUST create a notification for a task assignment, task reassignment,
   task status change, or new task comment and allow its intended predefined recipient to list
   their notifications. The recipient rules are: the new assignee for assignment or reassignment;
@@ -183,6 +183,18 @@ product manager and four engineers, and that exactly three sample projects are a
   field MUST be rejected without changing the task.
 - **FR-017**: The system MUST show each task's title, assignee, and status on its board card, and
   provide a task detail that shows immutable comments with their authors.
+
+### Input Validation Rules
+
+- Project names MUST be trimmed, contain 1–120 characters, and use only letters, numbers, spaces,
+  and `- _ . , ' ( )`.
+- Task titles MUST be trimmed, contain 1–200 characters, and use only letters, numbers, spaces,
+  and `- _ . , ' ( )`.
+- Comment content MUST be trimmed, contain 1–2,000 printable Unicode characters, and contain no
+  control characters.
+- User, project, and task identifiers MUST match their documented contract formats and resolve to
+  records valid for the requested relationship. Assignments MUST resolve to one of the four
+  predefined engineers, and task columns MUST be one of the four values defined by FR-005.
 
 ### Key Entities *(include if feature involves data)*
 

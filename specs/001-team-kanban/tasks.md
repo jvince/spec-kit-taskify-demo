@@ -168,6 +168,8 @@ and release validation across all user stories.
 - [ ] T050 Add performance, concurrency, input-validation, and no-sensitive-diagnostics coverage in tests/integration/performance-boundary.test.ts, tests/integration/input-validation.test.ts, and tests/integration/diagnostics.test.ts.
 - [ ] T051 Reconcile API, service, deployment, and operational documentation for the completed release in docs/api.md, docs/deployment.md, docs/runbook.md, and README.md.
 - [ ] T052 Run the end-to-end quickstart validation and record results, including the SC-001, SC-002, SC-005, and SC-006 timing thresholds, in specs/001-team-kanban/quickstart.md.
+- [ ] T053 Configure and document protected-main enforcement requiring pull requests, all required CI status checks, and at least one maintainer approval in .github/branch-protection/main.json and docs/development.md.
+- [ ] T054 Add the pull-request evidence workflow requiring links to specs/001-team-kanban/spec.md and specs/001-team-kanban/plan.md, required CI results, maintainer approval, and release-relevant changeset status in .github/pull_request_template.md and docs/development.md.
 
 ---
 
@@ -221,9 +223,9 @@ US1 + US2 + US3 + US4 ──> Polish and release validation
 2. Deliver US2 to make work state visible and real-time.
 3. Deliver US3 for immutable task discussion.
 4. Deliver US4 to guarantee a repeatable seeded demonstration.
-5. Complete notification UI and cross-cutting quality work before release.
+5. Complete notification UI, cross-cutting quality work, and pull-request governance evidence before release.
 
 ### Format Validation
 
-All 52 tasks use a checkbox, sequential task ID, optional parallel marker, required user-story
+All 54 tasks use a checkbox, sequential task ID, optional parallel marker, required user-story
 label when applicable, and exact file paths.
