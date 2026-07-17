@@ -10,10 +10,11 @@ interface NotificationItem {
   createdAt: string;
 }
 
-/** Lists only the selected actor's notifications through the browser-facing BFF route. */
+/** Lists and live-refreshes notifications owned by the selected local-demo actor. */
 export function NotificationList() {
   const [items, setItems] = useState<NotificationItem[]>([]);
   const [message, setMessage] = useState("Loading notifications…");
+  const [streamStatus, setStreamStatus] = useState("connecting");
   const load = useCallback(async () => {
     const actor = readActiveActor();
     setMessage("Loading notifications…");
@@ -24,27 +25,70 @@ export function NotificationList() {
       });
       if (!response.ok) throw new Error("Notifications are unavailable.");
       const body: unknown = await response.json();
-      const notifications = Array.isArray(body) ? body : [];
-      setItems(notifications.filter(isNotification));
+      const notifications = Array.isArray(body) ? body.filter(isNotification) : [];
+      setItems(notifications);
       setMessage(notifications.length === 0 ? "No notifications for this user." : "");
     } catch {
       setItems([]);
       setMessage("Notifications are unavailable right now.");
     }
   }, []);
+
   useEffect(() => {
     void load();
     window.addEventListener(ACTIVE_ACTOR_CHANGED, load);
     return () => window.removeEventListener(ACTIVE_ACTOR_CHANGED, load);
   }, [load]);
+  useEffect(() => {
+    let source: EventSource | undefined;
+    let retry: ReturnType<typeof setTimeout> | undefined;
+    let stopped = false;
+    const connect = () => {
+      if (stopped) return;
+      setStreamStatus("connecting");
+      source = new EventSource(
+        `/api/v1/notifications/stream?actorId=${encodeURIComponent(readActiveActor().id)}`
+      );
+      source.onopen = () => {
+        setStreamStatus("connected");
+        void load();
+      };
+      source.addEventListener("notification.created", () => void load());
+      source.onerror = () => {
+        setStreamStatus("reconnecting");
+        source?.close();
+        if (!stopped) retry = setTimeout(connect, 500);
+      };
+    };
+    const reconnectForActor = () => {
+      source?.close();
+      if (retry) clearTimeout(retry);
+      connect();
+    };
+    connect();
+    window.addEventListener(ACTIVE_ACTOR_CHANGED, reconnectForActor);
+    return () => {
+      stopped = true;
+      if (retry) clearTimeout(retry);
+      source?.close();
+      window.removeEventListener(ACTIVE_ACTOR_CHANGED, reconnectForActor);
+    };
+  }, [load]);
+
   return (
-    <section className="panel notifications" aria-labelledby="notifications-title">
+    <section
+      className="panel notifications global-notifications"
+      aria-labelledby="notifications-title"
+    >
       <div className="section-heading">
         <h2 id="notifications-title">Notifications</h2>
         <button type="button" className="text-button" onClick={() => void load()}>
           Refresh
         </button>
       </div>
+      <p className="stream-status" aria-live="polite">
+        Live notifications: {streamStatus}
+      </p>
       {items.length > 0 ? (
         <ul>
           {items.map((item) => (
@@ -55,7 +99,7 @@ export function NotificationList() {
           ))}
         </ul>
       ) : (
-        <p aria-live="polite">{message}</p>
+        <p aria-live="polite">{message || "No notifications for this user."}</p>
       )}
     </section>
   );

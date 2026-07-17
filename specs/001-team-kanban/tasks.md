@@ -163,11 +163,11 @@ product manager, four engineers, and three sample projects are available.
 **Purpose**: Complete notification visibility, operational documentation, accessibility, security,
 and release validation across all user stories.
 
-- [ ] T048 Enhance the in-app recipient notification list with live refresh, reconnection behavior, and an explicit empty-notification state in apps/web/components/notification-list.tsx and apps/web/app/layout.tsx.
-- [ ] T049 [P] Add accessibility verification for keyboard drag-and-drop, every board operation and form control, visible focus, and announced status results in tests/e2e/kanban-accessibility.spec.ts and docs/accessibility.md.
-- [ ] T050 [P] Add performance, concurrency, input-validation, relationship-preservation, and no-sensitive-diagnostics coverage in tests/integration/performance-boundary.test.ts, tests/integration/input-validation.test.ts, and tests/integration/diagnostics.test.ts.
-- [ ] T051 Reconcile API, service, deployment, and operational documentation for the completed release in docs/api.md, docs/deployment.md, docs/runbook.md, and README.md.
-- [ ] T052 Run the end-to-end quickstart validation and record results, including the SC-001, SC-002, SC-005, and SC-006 timing thresholds, in specs/001-team-kanban/quickstart.md.
+- [X] T048 Enhance the in-app recipient notification list with live refresh, reconnection behavior, and an explicit empty-notification state in apps/web/components/notification-list.tsx and apps/web/app/layout.tsx.
+- [X] T049 [P] Add accessibility verification for keyboard drag-and-drop, every board operation and form control, visible focus, and announced status results in tests/e2e/kanban-accessibility.spec.ts and docs/accessibility.md.
+- [X] T050 [P] Add performance, concurrency, input-validation, relationship-preservation, and no-sensitive-diagnostics coverage in tests/integration/performance-boundary.test.ts, tests/integration/input-validation.test.ts, and tests/integration/diagnostics.test.ts.
+- [X] T051 Reconcile API, service, deployment, and operational documentation for the completed release in docs/api.md, docs/deployment.md, docs/runbook.md, and README.md.
+- [X] T052 Run the end-to-end quickstart validation and record results, including the SC-001, SC-002, SC-005, and SC-006 timing thresholds, in specs/001-team-kanban/quickstart.md.
 
 ---
 
