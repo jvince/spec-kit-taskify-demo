@@ -8,7 +8,7 @@ import { notificationRecipients, createNotification } from "./events";
 import { listNotifications } from "./notifications";
 import { saveNotification } from "./notifications";
 import { replayEvents } from "./stream";
-import { subscribe } from "./live";
+import { publishBoardUpdate, subscribe } from "./live";
 
 /** Handles authenticated notification-service v1 reads without exposing its database to callers. */
 export function handleNotificationRequest(
@@ -87,6 +87,7 @@ export async function handleNotificationIngestion(
       }
     });
     persist();
+    publishBoardUpdate(payload.taskId);
     return Response.json({ accepted: true, duplicate: false }, { status: 202 });
   } catch {
     return new Response(null, { status: 503 });

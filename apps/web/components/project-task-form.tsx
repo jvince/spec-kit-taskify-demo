@@ -33,7 +33,8 @@ export function ProjectTaskForm() {
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
 
-  const [actor, setActor] = useState<ActiveActor>(readActiveActor);
+  // Match the server-rendered default, then restore local-demo state after hydration.
+  const [actor, setActor] = useState<ActiveActor>(LOCAL_DEMO_USERS[0]);
   const headers = () => ({
     "Content-Type": "application/json",
     "X-Actor-Id": readActiveActor().id
@@ -62,6 +63,7 @@ export function ProjectTaskForm() {
   }, []);
   useEffect(() => {
     const refreshActor = () => setActor(readActiveActor());
+    refreshActor();
     window.addEventListener(ACTIVE_ACTOR_CHANGED, refreshActor);
     return () => window.removeEventListener(ACTIVE_ACTOR_CHANGED, refreshActor);
   }, []);

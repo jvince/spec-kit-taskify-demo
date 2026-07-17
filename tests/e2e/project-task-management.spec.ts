@@ -1,6 +1,11 @@
 import { expect, test } from "@playwright/test";
 
 test("the local demo actor controls the Phase 3 project-management workspace", async ({ page }) => {
+  const hydrationErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error" && message.text().includes("Hydration failed"))
+      hydrationErrors.push(message.text());
+  });
   const projects = [
     {
       id: "prj-product-launch",
@@ -81,6 +86,11 @@ test("the local demo actor controls the Phase 3 project-management workspace", a
     page.getByText("Only the product manager can create or assign work in this demo.")
   ).toBeVisible();
   await expect(page.getByText("Task Assigned for tsk-browser-test")).toBeVisible();
+  await page.reload();
+  await expect(
+    page.getByText("Only the product manager can create or assign work in this demo.")
+  ).toBeVisible();
   await page.getByLabel("Active local-demo user").selectOption("usr-ada-pm");
   await expect(page.getByText("No notifications for this user.")).toBeVisible();
+  expect(hydrationErrors).toEqual([]);
 });

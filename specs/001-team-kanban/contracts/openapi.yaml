@@ -78,7 +78,9 @@ paths:
       parameters: [ { $ref: '#/components/parameters/ActorId' } ]
       responses:
         '200':
-          description: text/event-stream response with notification.created and task.updated events.
+          description: >-
+            Authenticated text/event-stream response with notification.created and task.updated
+            invalidations. Clients refresh board state on task.updated and whenever reconnecting.
   /notification-events:
     post:
       summary: Ingest a task event from an authenticated Taskify service

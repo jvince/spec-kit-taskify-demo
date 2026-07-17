@@ -97,17 +97,17 @@ engineer is forbidden.
 
 ### Tests for User Story 2
 
-- [ ] T030 [P] [US2] Add task status PATCH contract tests for permitted statuses, stale versions, and rejection of both or neither mutable field in tests/contract/task-status.contract.test.ts.
-- [ ] T031 [P] [US2] Add task-move authorization, notification, and relationship-preservation integration tests proving that accepted and rejected status moves do not change task project or assignee in tests/integration/task-status-authorization.test.ts.
-- [ ] T032 [P] [US2] Add drag-and-drop, real-time multi-client, and empty-board browser coverage, including four visible empty columns and preservation of project and assignee after moves, in tests/e2e/kanban-realtime.spec.ts.
+- [X] T030 [P] [US2] Add task status PATCH contract tests for permitted statuses, stale versions, and rejection of both or neither mutable field in tests/contract/task-status.contract.test.ts.
+- [X] T031 [P] [US2] Add task-move authorization, notification, and relationship-preservation integration tests proving that accepted and rejected status moves do not change task project or assignee in tests/integration/task-status-authorization.test.ts.
+- [X] T032 [P] [US2] Add drag-and-drop, real-time multi-client, and empty-board browser coverage, including four visible empty columns and preservation of project and assignee after moves, in tests/e2e/kanban-realtime.spec.ts.
 
 ### Implementation for User Story 2
 
-- [ ] T033 [US2] Implement validated task status mutations, role checks, and optimistic-version conflict handling in services/task-board-service/src/tasks.ts.
-- [ ] T034 [US2] Publish task status notifications and board-update events through the authenticated v1 notification-ingestion contract in services/task-board-service/src/notification-client.ts with retry-safe failure handling; do not import notification-service source modules.
-- [ ] T035 [US2] Implement the project board query and status mutation REST handlers in apps/web/app/api/v1/projects/[projectId]/route.ts and apps/web/app/api/v1/tasks/[taskId]/route.ts; update the board mutation, SSE, and accessibility documentation with the same change.
-- [ ] T036 [US2] Implement the four-column accessible drag-and-drop board, including an empty-board state that keeps all four columns visible, in apps/web/app/projects/[projectId]/page.tsx and apps/web/components/kanban-board.tsx.
-- [ ] T037 [US2] Implement the authenticated event-stream client and board refresh behavior in apps/web/lib/notification-stream.ts and apps/web/components/kanban-board.tsx.
+- [X] T033 [US2] Implement validated task status mutations, role checks, and optimistic-version conflict handling in services/task-board-service/src/tasks.ts.
+- [X] T034 [US2] Publish task status notifications and board-update events through the authenticated v1 notification-ingestion contract in services/task-board-service/src/notification-client.ts with retry-safe failure handling; do not import notification-service source modules.
+- [X] T035 [US2] Implement the project board query and status mutation REST handlers in apps/web/app/api/v1/projects/[projectId]/route.ts and apps/web/app/api/v1/tasks/[taskId]/route.ts; update the board mutation, SSE, and accessibility documentation with the same change.
+- [X] T036 [US2] Implement the four-column accessible drag-and-drop board, including an empty-board state that keeps all four columns visible, in apps/web/app/projects/[projectId]/page.tsx and apps/web/components/kanban-board.tsx.
+- [X] T037 [US2] Implement the authenticated event-stream client and board refresh behavior in apps/web/lib/notification-stream.ts and apps/web/components/kanban-board.tsx.
 
 **Checkpoint**: The board provides role-aware drag-and-drop status changes and real-time updates.
 
