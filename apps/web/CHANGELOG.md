@@ -1,5 +1,11 @@
 # @taskify/web
 
+## 0.4.0
+
+### Minor Changes
+
+- 6fcd38b: Add the ready-to-use seeded workspace overview with persisted and resettable local-demo actor selection.
+
 ## 0.3.0
 
 ### Minor Changes
