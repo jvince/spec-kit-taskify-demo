@@ -8,22 +8,29 @@
 
 ## Local seeded workspace
 
-Install dependencies and start the App Router shell:
+Install dependencies, create `apps/web/.env.local` as described below, and start the complete local
+environment:
 
 ```sh
 npm ci
-npm run dev
+npm run dev:all
 ```
 
 Set `TASKIFY_DEPLOYMENT_MODE=local-demo` and a 24-character-or-longer
 `TASKIFY_SERVICE_CREDENTIAL` in local secret storage. Configure private service origins with
 `TASKIFY_PROJECT_SERVICE_ORIGIN`, `TASKIFY_TASK_BOARD_SERVICE_ORIGIN`,
 `TASKIFY_COLLABORATION_SERVICE_ORIGIN`, and `TASKIFY_NOTIFICATION_SERVICE_ORIGIN`; browsers never
-receive these credentials or origins. Run each service's exported `start…Server` adapter with its
-own SQLite path to expose the v1 endpoints. The project service seeds the fixed roster and sample
-projects at startup. Product/task mutations flow through the BFF; task-board publishes assignment
-events through the private authenticated notification-ingestion endpoint, never through a shared
-database or browser-visible service credential.
+receive these credentials or origins. `npm run dev:all` loads `apps/web/.env.local`, starts the web
+application and all four service adapters on ports 4101–4104, and stores their independent SQLite
+databases under the ignored `.taskify-data/` directory. Stop the complete environment with
+`Ctrl+C`. The project service seeds the fixed roster and sample projects at startup. Product/task
+mutations flow through the BFF; task-board publishes assignment events through the private
+authenticated notification-ingestion endpoint, never through a shared database or browser-visible
+service credential.
+
+Start by copying `apps/web/.env.example` to `apps/web/.env.local`, then replace the example
+credential with a random value. The service origins already match the `dev:all` ports. Never commit
+`.env.local`.
 
 Project-service seeding is idempotent: call `seedProjectDatabase` after migration to create exactly
 five predefined users and three sample projects. For a local reset, stop the service and delete only

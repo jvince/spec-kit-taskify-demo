@@ -79,3 +79,23 @@ email, push delivery, preferences, and read-state are deferred.
 - No notifications: conflicts with the planning request.
 - External push/email delivery: requires user accounts, credentials, and delivery integrations
 that are outside the no-login first phase.
+
+## Decision: tsx 4.23.1 for local service entry points
+
+**Rationale**: The independently deployable service adapters are TypeScript modules. The pinned
+`tsx` development runner executes those modules without adding a build artifact or requiring each
+developer to install a global tool. A small repository-owned supervisor can therefore start all
+four services and Next.js with one command and terminate them together.
+
+**Alternatives considered**:
+
+- Native Node.js type stripping: rejected because the service modules use extensionless imports,
+  which Node.js does not resolve for TypeScript source files.
+- Separate compiled development builds: adds build/watch configuration and intermediate output
+  for a local workflow that `tsx` handles directly.
+- A process-manager dependency: unnecessary because the required supervision is small and uses
+  Node.js child processes.
+
+**Compatibility and security evidence**: Version 4.23.1 is pinned and validated with Node.js
+24.16.0. `npm audit` after installation reports no advisory introduced by `tsx`; the existing two
+moderate findings remain the documented Next.js/PostCSS exception.
