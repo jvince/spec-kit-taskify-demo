@@ -146,13 +146,13 @@ product manager, four engineers, and three sample projects are available.
 
 ### Tests for User Story 4
 
-- [ ] T044 [P] [US4] Add seeded roster and sample-project integration coverage in tests/integration/workspace-seed.test.ts.
-- [ ] T045 [P] [US4] Add initial-workspace and active-actor browser coverage in tests/e2e/seeded-workspace.spec.ts.
+- [X] T044 [P] [US4] Add seeded roster and sample-project integration coverage in tests/integration/workspace-seed.test.ts.
+- [X] T045 [P] [US4] Add initial-workspace and active-actor browser coverage in tests/e2e/seeded-workspace.spec.ts.
 
 ### Implementation for User Story 4
 
-- [ ] T046 [US4] Integrate the existing predefined-user selector into the initial workspace and implement local-demo active-actor selection persistence and reset behavior in apps/web/app/page.tsx and apps/web/lib/active-actor.ts.
-- [ ] T047 [US4] Implement initial workspace project list and roster display in apps/web/app/page.tsx and apps/web/components/workspace-overview.tsx; update seeded-workspace and local-demo deployment guidance with the same change.
+- [X] T046 [US4] Integrate the existing predefined-user selector into the initial workspace and implement local-demo active-actor selection persistence and reset behavior in apps/web/app/page.tsx and apps/web/lib/active-actor.ts.
+- [X] T047 [US4] Implement initial workspace project list and roster display in apps/web/app/page.tsx and apps/web/components/workspace-overview.tsx; update seeded-workspace and local-demo deployment guidance with the same change.
 
 **Checkpoint**: The seeded, no-login workspace is ready for an end-to-end demonstration.
 

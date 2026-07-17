@@ -5,6 +5,7 @@ import {
   ACTIVE_ACTOR_CHANGED,
   LOCAL_DEMO_USERS,
   readActiveActor,
+  resetActiveActor,
   setActiveActor
 } from "../lib/active-actor";
 
@@ -19,23 +20,32 @@ export function ActiveUserSelector() {
   }, []);
 
   return (
-    <label className="actor-selector">
-      <span>Viewing as</span>
-      <select
-        aria-label="Active local-demo user"
-        value={actorId}
-        onChange={(event) => {
-          setActiveActor(event.target.value);
-          setActorId(event.target.value);
-        }}
+    <div className="actor-controls">
+      <label className="actor-selector">
+        <span>Viewing as</span>
+        <select
+          aria-label="Active local-demo user"
+          value={actorId}
+          onChange={(event) => {
+            setActiveActor(event.target.value);
+            setActorId(event.target.value);
+          }}
+        >
+          {LOCAL_DEMO_USERS.map((actor) => (
+            <option key={actor.id} value={actor.id}>
+              {actor.displayName} (
+              {actor.role === "product_manager" ? "Product manager" : "Engineer"})
+            </option>
+          ))}
+        </select>
+      </label>
+      <button
+        className="text-button"
+        type="button"
+        onClick={() => setActorId(resetActiveActor().id)}
       >
-        {LOCAL_DEMO_USERS.map((actor) => (
-          <option key={actor.id} value={actor.id}>
-            {actor.displayName} ({actor.role === "product_manager" ? "Product manager" : "Engineer"}
-            )
-          </option>
-        ))}
-      </select>
-    </label>
+        Reset active user
+      </button>
+    </div>
   );
 }

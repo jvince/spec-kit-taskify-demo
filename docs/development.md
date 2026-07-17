@@ -6,7 +6,7 @@
 - Do not create production-facing deployments from this Phase 1 foundation: no authentication
   exists yet, and Phase 2 will explicitly fail closed outside the local seeded-demo environment.
 
-## Local Phase 2 workspace
+## Local seeded workspace
 
 Install dependencies and start the App Router shell:
 
@@ -29,6 +29,13 @@ Project-service seeding is idempotent: call `seedProjectDatabase` after migratio
 five predefined users and three sample projects. For a local reset, stop the service and delete only
 its explicitly configured SQLite database file, then migrate and seed again. Never use this reset
 procedure in a shared or production-like environment.
+
+Open `/` to verify the fixed roster and sample projects and to select any predefined actor without
+credentials. The selection persists in browser-local storage across navigation and reloads. Use
+**Reset active user** to clear that browser state and return to the seeded product manager. This
+selector and reset behavior are demonstration conveniences only: keep
+`TASKIFY_DEPLOYMENT_MODE=local-demo`, and do not expose this deployment until real authentication
+replaces the seeded actor context.
 
 All public endpoints are namespaced under `/api/v1`; additive fields are compatible, while breaking
 changes require a new API version and a migration plan.
