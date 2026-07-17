@@ -2,14 +2,12 @@ name: Quality gates
 
 on:
   pull_request:
-  push:
-    branches: [main]
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
@@ -18,15 +16,10 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout pull request history
-        if: github.event_name == 'pull_request'
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - name: Checkout push history
-        if: github.event_name != 'pull_request'
-        uses: actions/checkout@v5
       - name: Fetch base branch for Changesets
-        if: github.event_name == 'pull_request'
         run: git fetch origin main:main
       - uses: actions/setup-node@v6
         with:
@@ -42,5 +35,5 @@ jobs:
       - run: npx playwright install --with-deps chromium --only-shell
       - run: npm run test:e2e
       - name: Validate Changesets release plan
-        if: github.event_name == 'pull_request' && !startsWith(github.head_ref, 'changeset-release/')
+        if: ${{ !startsWith(github.head_ref, 'changeset-release/') }}
         run: npm run changeset:status
