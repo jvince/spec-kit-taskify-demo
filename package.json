@@ -2,6 +2,7 @@
   "name": "taskify",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@12.3.4",
   "description": "Security-first team productivity platform.",
   "workspaces": [
     "apps/*",
@@ -10,19 +11,20 @@
   ],
   "engines": {
     "node": "24.16.0",
-    "npm": "11.13.0"
+    "pnpm": "12.3.4"
   },
   "scripts": {
-    "dev": "npm run dev --workspace=@taskify/web",
+    "dev": "node scripts/dev-all.mjs",
+    "dev:web": "pnpm --filter @taskify/web dev",
     "dev:all": "node scripts/dev-all.mjs",
     "dev:service": "tsx scripts/start-service.ts",
-    "build": "npm run build --workspace=@taskify/web",
-    "start": "npm run start --workspace=@taskify/web",
+    "build": "pnpm --filter @taskify/web build",
+    "start": "pnpm --filter @taskify/web start",
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "test": "npm run test:unit && npm run test:contract && npm run test:integration && npm run test:e2e",
+    "test": "pnpm run test:unit && pnpm run test:contract && pnpm run test:integration && pnpm run test:e2e",
     "test:unit": "vitest run tests/unit --passWithNoTests",
     "test:contract": "vitest run tests/contract --passWithNoTests",
     "test:integration": "vitest run tests/integration --passWithNoTests",

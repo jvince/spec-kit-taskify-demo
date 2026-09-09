@@ -2,7 +2,7 @@ services:
   web:
     image: node:24.16.0-bookworm
     working_dir: /workspace
-    command: sh -c "npm ci && npm run dev -- --hostname 0.0.0.0"
+    command: sh -c "corepack pnpm install --frozen-lockfile && corepack pnpm run dev"
     ports:
       - "3000:3000"
     volumes:
@@ -10,6 +10,7 @@ services:
       - taskify-node-modules:/workspace/node_modules
     environment:
       NODE_ENV: development
+      TASKIFY_WEB_HOSTNAME: 0.0.0.0
 
 volumes:
   taskify-node-modules:

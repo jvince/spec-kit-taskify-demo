@@ -6,16 +6,16 @@ It starts with five fixed users and three sample projects and intentionally prov
 
 ## Develop and verify
 
-Use Node.js 24.16.0 and npm 11.13.0.
+Use Node.js 24.16.0 and pnpm 12.3.4.
 
 ```sh
-npm ci
-npm run dev
-npm run format:check
-npm run lint
-npm run typecheck
-npm run build
-npm test
+pnpm install --frozen-lockfile
+pnpm run dev
+pnpm run format:check
+pnpm run lint
+pnpm run typecheck
+pnpm run build
+pnpm test
 ```
 
 The actor selector is permitted only with `TASKIFY_DEPLOYMENT_MODE=local-demo`; all other modes

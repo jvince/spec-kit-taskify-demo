@@ -8,7 +8,7 @@ high-contrast focus outline. Dragging is an enhancement and is never the only wa
 
 ## Verification
 
-Run `npm run test:e2e -- --grep "board controls"`. The browser check moves a task with only the
+Run `pnpm run test:e2e -- --grep "board controls"`. The browser check moves a task with only the
 keyboard, verifies the native status selector retains focus with a non-empty computed outline, and
 asserts the polite status region announces the accepted destination. It also checks that rendered
 buttons, links, inputs, selects, and text areas expose an accessible label or text name.

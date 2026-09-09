@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js 24.16.0 and npm 11.13.0, or Docker Desktop with Compose support.
+- Node.js 24.16.0 and pnpm 12.3.4, or Docker Desktop with Compose support.
 - Do not create production-facing deployments from this Phase 1 foundation: no authentication
   exists yet, and Phase 2 will explicitly fail closed outside the local seeded-demo environment.
 
@@ -12,15 +12,19 @@ Install dependencies, create `apps/web/.env.local` as described below, and start
 environment:
 
 ```sh
-npm ci
-npm run dev:all
+pnpm install --frozen-lockfile
+pnpm run dev
 ```
+
+The development launcher reads `apps/web/.env.local`, stores service-owned SQLite databases under
+`.taskify-data`, and listens on ports 4101 through 4104. Use `pnpm run dev:web` when intentionally
+starting only the web application against services managed separately.
 
 Set `TASKIFY_DEPLOYMENT_MODE=local-demo` and a 24-character-or-longer
 `TASKIFY_SERVICE_CREDENTIAL` in local secret storage. Configure private service origins with
 `TASKIFY_PROJECT_SERVICE_ORIGIN`, `TASKIFY_TASK_BOARD_SERVICE_ORIGIN`,
 `TASKIFY_COLLABORATION_SERVICE_ORIGIN`, and `TASKIFY_NOTIFICATION_SERVICE_ORIGIN`; browsers never
-receive these credentials or origins. `npm run dev:all` loads `apps/web/.env.local`, starts the web
+receive these credentials or origins. `pnpm run dev` loads `apps/web/.env.local`, starts the web
 application and all four service adapters on ports 4101–4104, and stores their independent SQLite
 databases under the ignored `.taskify-data/` directory. Stop the complete environment with
 `Ctrl+C`. The project service seeds the fixed roster and sample projects at startup. Product/task
@@ -85,10 +89,10 @@ settings; GitHub repository settings remain the enforcement source of truth.
 Run each required gate before opening or updating the pull request:
 
 ```sh
-npm run lint
-npm run typecheck
-npm run format:check
-npm run test
+pnpm run lint
+pnpm run typecheck
+pnpm run format:check
+pnpm run test
 ```
 
 The test commands cover the Phase 2 foundation; later phases add feature and browser coverage.
@@ -96,7 +100,7 @@ The test commands cover the Phase 2 foundation; later phases add feature and bro
 ## Dependency management
 
 Use exact stable versions in every committed package manifest; do not use `latest`, wildcard, or
-range specifiers. Commit the compatible lockfile and use `npm ci` for CI and reproducible local
+range specifiers. Commit the compatible lockfile and use `pnpm install --frozen-lockfile` for CI and reproducible local
 validation. Record dependency additions or upgrades with their compatibility and vulnerability
 evidence. Any exception requires a documented scope, mitigation, owner, and review or expiry date.
 
