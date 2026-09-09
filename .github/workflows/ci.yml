@@ -21,19 +21,20 @@ jobs:
           fetch-depth: 0
       - name: Fetch base branch for Changesets
         run: git fetch origin main:main
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version: 24.16.0
-          cache: npm
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npm run format:check
-      - run: npm run test:unit
-      - run: npm run test:contract
-      - run: npm run test:integration
-      - run: npx playwright install --with-deps chromium --only-shell
-      - run: npm run test:e2e
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
+      - run: pnpm run typecheck
+      - run: pnpm run format:check
+      - run: pnpm run test:unit
+      - run: pnpm run test:contract
+      - run: pnpm run test:integration
+      - run: pnpm exec playwright install --with-deps chromium --only-shell
+      - run: pnpm run test:e2e
       - name: Validate Changesets release plan
         if: ${{ !startsWith(github.head_ref, 'changeset-release/') }}
-        run: npm run changeset:status
+        run: pnpm run changeset:status

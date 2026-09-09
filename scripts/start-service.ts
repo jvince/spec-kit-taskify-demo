@@ -15,7 +15,7 @@ const start = serviceName ? starters[serviceName] : undefined;
 
 if (!start || !Number.isInteger(port) || port < 1 || port > 65_535) {
   console.error(
-    "Usage: npm run dev:service -- <project|task-board|collaboration|notification> <port>"
+    "Usage: pnpm run dev:service -- <project|task-board|collaboration|notification> <port>"
   );
   process.exit(1);
 }

@@ -14,6 +14,6 @@ the repository.
 
 Build only reviewed repository sources because the recorded Next.js/PostCSS build-time exception
 remains active until the review date in the implementation plan. Install reproducibly with
-`npm ci`, run all quality gates, and deploy from a merged, verified pull request. Back up and
+`pnpm install --frozen-lockfile`, run all quality gates, and deploy from a merged, verified pull request. Back up and
 restore each service-owned SQLite database independently; never combine or query them across
 service boundaries.
