@@ -6,7 +6,7 @@ export default defineConfig({
   timeout: 30_000,
   use: { baseURL: "http://localhost:3001" },
   webServer: {
-    command: "npx next dev apps/web --port 3001",
+    command: "node apps/web/node_modules/next/dist/bin/next dev apps/web --port 3001",
     url: "http://localhost:3001",
     reuseExistingServer: false
   }
